@@ -26,6 +26,7 @@
     "@testing-library/react": "^16.3.0",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "jest-transform-css": "^6.0.3",
     "react": "^19.1.1"
   },
   "peerDependencies": {

@@ -9,9 +9,13 @@ export function TweetButton() {
   // JSX语法
   // 是要渲染的具体内容
   return (
-    <div>
-      <a href={tweetURL} target="_blank" rel="noopener noreferrer">
-        Send a thank you tweet
+    <div className="tweet-btn-container">
+      <a 
+        className="tweet-button"
+        href={tweetURL} 
+        target="_blank" 
+        rel="noopener noreferrer">
+        按钮
       </a>
     </div>
   );
