@@ -1,4 +1,5 @@
 import React from "react";
+import "./index.css"
 
 // 导出了一个React的组件，名字叫做 TweetButton
 // 这里使用的是具名导出而非匿名导出
