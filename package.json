@@ -2,12 +2,20 @@
   "name": "yggjs_rbutton",
   "version": "1.0.0",
   "description": "专为React打造的按钮组件库",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rmdir /s /q dist & babel src -d dist --ignore src\\**\\*.test.jsx & npm run copy-files",
     "copy-files": "copy src\\components\\TweetButton\\index.css dist\\components\\TweetButton\\",
-    "test": "jest --config jest.config.json"
+    "test": "jest --config jest.config.json",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
   },
+  "sideEffects": [
+    "**/*.css"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yggai/yggjs_rbutton.git"
@@ -15,7 +23,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/yggai/yggjs_rbutton/issues"
   },
