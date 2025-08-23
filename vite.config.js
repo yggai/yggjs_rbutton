@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), cssInjectedByJs()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.js'),
+      entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'yggjs_rbutton',
       fileName: (format) => `yggjs_rbutton.${format}.js`
     },
