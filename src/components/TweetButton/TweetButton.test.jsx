@@ -1,13 +1,23 @@
-import React from "react";
-import { render } from "@testing-library/react";
-import { test } from "@jest/globals";
-import { TweetButton } from "./TweetButton";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { test, expect } from '@jest/globals';
+import { TweetButton } from './'; // Updated import path
 
-// 一个单元测试
-// 单元测试的名字：tweet button renders correctly
-// 单元测试的具体内容：() => {}  是一个匿名函数
-test("tweet button renders correctly", () => {
-  // 渲染 TweetButton 这个组件
-  // 也就是说这个单元测试的作用是确定这个组件能否正常渲染
+test('renders with default props', () => {
   render(<TweetButton />);
+  // screen.getByRole finds an element by its accessibility role
+  const linkElement = screen.getByRole('link', { name: 'Tweet' });
+  // expect is used to assert that a value matches an expectation
+  expect(linkElement).not.toBeNull();
+  expect(linkElement.getAttribute('href')).toBe('https://twitter.com/intent/tweet');
+});
+
+test('renders with custom children and href', () => {
+  const testUrl = 'https://example.com';
+  const testText = 'Click me';
+  render(<TweetButton href={testUrl}>{testText}</TweetButton>);
+
+  const linkElement = screen.getByRole('link', { name: testText });
+  expect(linkElement).not.toBeNull();
+  expect(linkElement.getAttribute('href')).toBe(testUrl);
 });

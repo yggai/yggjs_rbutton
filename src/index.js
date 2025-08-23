@@ -1,2 +1,2 @@
-export { TweetButton } from './components/TweetButton/TweetButton';
+export { TweetButton } from './components/TweetButton';
 
