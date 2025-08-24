@@ -1,17 +1,36 @@
-import React, { forwardRef, useMemo, useState } from 'react';
+import React, { forwardRef, useMemo, useState, cloneElement, isValidElement } from 'react';
 import { TechButtonProps } from './types';
 import {
   getTechButtonStyles,
   getVariantHoverStyles,
   getVariantActiveStyles,
   getGlowStyles,
+  getCombinedStyles,
+  getIconSizeForButton,
+  getShapeAdjustedStyles,
 } from './styles';
+import {
+  useDebounceClick,
+  useKeyboardHandler,
+  useFocusHandler,
+  isMobileDevice,
+  supportsTouchEvents,
+} from './hooks';
 
 /**
- * 科技风按钮组件
+ * 科技风按钮组件 v1.1.0
  * 
- * 这是一个高性能的科技风格按钮组件，采用CSS-in-JS技术实现样式管理。
- * 组件具有以下特性：
+ * 这是一个企业级的科技风格按钮组件，采用CSS-in-JS技术实现样式管理。
+ * v1.1.0 新增功能：
+ * - 完整的图标支持系统（左图标、右图标、纯图标按钮）
+ * - 多种填充模式（solid、outline、ghost、link）
+ * - 多种形状变体（default、rounded、circular、square）
+ * - 键盘导航支持（Enter、Space键）
+ * - 防重复点击保护机制
+ * - 响应式设计和移动端优化
+ * - 增强的可访问性支持
+ * 
+ * 组件特性：
  * - 支持多种尺寸（small, medium, large）
  * - 支持多种主题变体（primary, secondary, danger, success）
  * - 支持加载状态和禁用状态
@@ -27,14 +46,24 @@ import {
  *   点击我
  * </TechButton>
  * 
- * // 带发光效果的大尺寸主按钮
- * <TechButton size="large" glowing>
- *   立即开始
+ * // 带图标的按钮
+ * <TechButton iconLeft={<SearchIcon />} size="large">
+ *   搜索
  * </TechButton>
  * 
- * // 加载状态的危险按钮
- * <TechButton variant="danger" loading>
- *   删除数据
+ * // 纯图标按钮
+ * <TechButton iconLeft={<DeleteIcon />} iconOnly shape="circular">
+ *   删除
+ * </TechButton>
+ * 
+ * // 边框模式的危险按钮
+ * <TechButton variant="danger" fill="outline" glowing>
+ *   危险操作
+ * </TechButton>
+ * 
+ * // 防重复点击的提交按钮
+ * <TechButton preventDoubleClick debounceDelay={500}>
+ *   提交表单
  * </TechButton>
  * ```
  */
@@ -44,64 +73,120 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
       children,
       size = 'medium',
       variant = 'primary',
+      fill = 'solid',
+      shape = 'default',
+      iconLeft,
+      iconRight,
+      iconOnly = false,
+      iconSize,
       loading = false,
       glowing = false,
       fullWidth = false,
+      preventDoubleClick = false,
+      debounceDelay = 300,
+      responsive = false,
+      minTouchTarget = false,
       disabled = false,
       className = '',
       onClick,
+      onFocus,
+      onBlur,
+      onKeyDown,
       ...rest
     },
     ref
   ) => {
-    // 状态管理
+    // ==================== 状态管理 ====================
+    
     const [isHovered, setIsHovered] = useState<boolean>(false);
     const [isActive, setIsActive] = useState<boolean>(false);
 
+    // ==================== Hooks ====================
+    
     // 获取样式对象（使用缓存优化性能）
     const styles = getTechButtonStyles();
 
+    // 防重复点击Hook
+    const { handleClick: debouncedClick } = useDebounceClick(
+      onClick,
+      debounceDelay,
+      preventDoubleClick
+    );
+
+    // 键盘导航Hook
+    const { handleKeyDown: keyboardHandler } = useKeyboardHandler(
+      debouncedClick,
+      disabled || loading
+    );
+
+    // 焦点管理Hook
+    const { handleFocus: focusHandler, handleBlur: blurHandler } = useFocusHandler();
+
+    // ==================== 计算属性 ====================
+    
     // 计算最终是否禁用（加载状态下也应该禁用）
     const isDisabled = disabled || loading;
 
+    // 计算实际的图标尺寸
+    const actualIconSize = iconSize || getIconSizeForButton(size);
+
+    // 检测移动设备和触摸支持
+    const isMobile = isMobileDevice();
+    const hasTouch = supportsTouchEvents();
+
+    // ==================== 样式计算 ====================
+    
     // 合并样式 - 使用 useMemo 优化性能，避免不必要的重新计算
     const buttonStyles = useMemo(() => {
-      let computedStyles: React.CSSProperties = {
-        ...styles.base,
-        ...styles.sizes[size],
-        ...styles.variants[variant],
-      };
+      let computedStyles: React.CSSProperties = getCombinedStyles(
+        styles.base,
+        styles.sizes[size],
+        styles.variants[variant],
+        styles.fills[fill],
+        styles.shapes[shape]
+      );
 
       // 应用状态样式
       if (isDisabled) {
-        computedStyles = { ...computedStyles, ...styles.states.disabled };
+        computedStyles = getCombinedStyles(computedStyles, styles.states.disabled);
       } else if (loading) {
-        computedStyles = { ...computedStyles, ...styles.states.loading };
+        computedStyles = getCombinedStyles(computedStyles, styles.states.loading);
       } else if (isActive) {
-        computedStyles = {
-          ...computedStyles,
-          ...styles.states.active,
-          ...getVariantActiveStyles(variant),
-        };
+        computedStyles = getCombinedStyles(
+          computedStyles,
+          styles.states.active,
+          getVariantActiveStyles(variant, fill)
+        );
       } else if (isHovered) {
-        computedStyles = {
-          ...computedStyles,
-          ...styles.states.hover,
-          ...getVariantHoverStyles(variant),
-        };
+        computedStyles = getCombinedStyles(
+          computedStyles,
+          styles.states.hover,
+          getVariantHoverStyles(variant, fill)
+        );
       }
 
       // 应用特效样式
       if (glowing && !isDisabled) {
         const glowStyles = getGlowStyles(variant);
-        computedStyles = {
-          ...computedStyles,
-          boxShadow: `${computedStyles.boxShadow}, ${glowStyles.boxShadow?.toString().split(', ').pop()}`,
-        };
+        computedStyles = getCombinedStyles(computedStyles, glowStyles);
       }
 
       if (fullWidth) {
-        computedStyles = { ...computedStyles, ...styles.effects.fullWidth };
+        computedStyles = getCombinedStyles(computedStyles, styles.effects.fullWidth);
+      }
+
+      if (responsive) {
+        computedStyles = getCombinedStyles(computedStyles, styles.effects.responsive);
+      }
+
+      if (minTouchTarget && (isMobile || hasTouch)) {
+        computedStyles = getCombinedStyles(computedStyles, styles.effects.minTouchTarget);
+      }
+
+      // 形状和图标相关的样式调整
+      const shapeAdjustedStyles = getShapeAdjustedStyles(shape, size, iconOnly);
+      if (Object.keys(shapeAdjustedStyles).length > 0) {
+        computedStyles = getCombinedStyles(computedStyles, shapeAdjustedStyles);
       }
 
       return computedStyles;
@@ -109,24 +194,94 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
       styles,
       size,
       variant,
+      fill,
+      shape,
       isDisabled,
       loading,
       isActive,
       isHovered,
       glowing,
       fullWidth,
+      responsive,
+      minTouchTarget,
+      iconOnly,
+      isMobile,
+      hasTouch,
     ]);
 
-    // 处理点击事件
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // ==================== 图标处理 ====================
+    
+    /**
+     * 渲染图标元素
+     * 为图标添加适当的样式和尺寸
+     */
+    const renderIcon = (icon: React.ReactNode, position: 'left' | 'right' | 'only') => {
+      if (!icon) return null;
+
+      const iconStyles = getCombinedStyles(
+        styles.icons.base,
+        styles.icons.sizes[actualIconSize],
+        styles.icons[position]
+      );
+
+      // 如果图标是React元素，克隆并添加样式
+      if (isValidElement(icon)) {
+        const iconElement = icon as React.ReactElement<any>;
+        return cloneElement(iconElement, {
+          ...iconElement.props,
+          style: getCombinedStyles(iconElement.props.style || {}, iconStyles),
+          'aria-hidden': 'true', // 图标对屏幕阅读器隐藏
+        });
+      }
+
+      // 如果图标不是React元素，包装在span中
+      return (
+        <span style={iconStyles} aria-hidden="true">
+          {icon}
+        </span>
+      );
+    };
+
+    // ==================== 事件处理 ====================
+    
+    /**
+     * 处理点击事件
+     */
+    const handleClickEvent = (event: React.MouseEvent<HTMLButtonElement>) => {
       // 如果按钮被禁用或正在加载，阻止点击事件
-      if (isDisabled || loading) {
+      if (isDisabled) {
         event.preventDefault();
         return;
       }
 
-      // 调用外部传入的点击处理函数
-      onClick?.(event);
+      // 调用防抖处理后的点击函数
+      debouncedClick(event);
+    };
+
+    /**
+     * 处理键盘事件
+     */
+    const handleKeyDownEvent = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      // 调用自定义键盘处理函数
+      onKeyDown?.(event);
+      
+      // 如果事件未被阻止，调用内置键盘处理
+      if (!event.defaultPrevented) {
+        keyboardHandler(event);
+      }
+    };
+
+    /**
+     * 处理焦点事件
+     */
+    const handleFocusEvent = (event: React.FocusEvent<HTMLButtonElement>) => {
+      onFocus?.(event);
+      focusHandler(event);
+    };
+
+    const handleBlurEvent = (event: React.FocusEvent<HTMLButtonElement>) => {
+      onBlur?.(event);
+      blurHandler(event);
     };
 
     // 鼠标事件处理
@@ -151,7 +306,11 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
       setIsActive(false);
     };
 
-    // 渲染按钮内容
+    // ==================== 内容渲染 ====================
+    
+    /**
+     * 渲染按钮内容
+     */
     const renderContent = () => {
       if (loading) {
         return (
@@ -171,12 +330,61 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
           </span>
         );
       }
-      return children;
+
+      // 纯图标按钮模式
+      if (iconOnly) {
+        const mainIcon = iconLeft || iconRight;
+        return renderIcon(mainIcon, 'only');
+      }
+
+      // 正常模式：文本 + 图标
+      return (
+        <>
+          {iconLeft && renderIcon(iconLeft, 'left')}
+          <span>{children}</span>
+          {iconRight && renderIcon(iconRight, 'right')}
+        </>
+      );
     };
 
+    // ==================== 可访问性属性 ====================
+    
+    const accessibilityProps = {
+      // 基础可访问性
+      'aria-busy': loading,
+      'aria-disabled': isDisabled,
+      
+      // 纯图标按钮的可访问性标签
+      ...(iconOnly && typeof children === 'string' && {
+        'aria-label': children,
+      }),
+      
+      // 加载状态的额外信息
+      ...(loading && {
+        'aria-describedby': 'loading-description',
+      }),
+    };
+
+    // ==================== 数据属性 ====================
+    
+    const dataAttributes = {
+      'data-size': size,
+      'data-variant': variant,
+      'data-fill': fill,
+      'data-shape': shape,
+      'data-loading': loading,
+      'data-glowing': glowing,
+      'data-full-width': fullWidth,
+      'data-icon-only': iconOnly,
+      'data-responsive': responsive,
+      'data-min-touch-target': minTouchTarget,
+    };
+
+    // ==================== 组件渲染 ====================
+    
     return (
       <>
-        {/* 注入加载动画的CSS */}
+        {/* 注入CSS动画 */}
         <style>
           {`
             @keyframes techButtonSpin {
@@ -192,23 +400,39 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
           className={className}
           style={buttonStyles}
           disabled={isDisabled}
-          onClick={handleClick}
+          onClick={handleClickEvent}
+          onKeyDown={handleKeyDownEvent}
+          onFocus={handleFocusEvent}
+          onBlur={handleBlurEvent}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
-          // 可访问性属性
-          aria-busy={loading}
-          aria-disabled={isDisabled}
-          // 数据属性，便于测试和样式定制
-          data-size={size}
-          data-variant={variant}
-          data-loading={loading}
-          data-glowing={glowing}
-          data-full-width={fullWidth}
+          {...accessibilityProps}
+          {...dataAttributes}
           {...rest}
         >
           {renderContent()}
+          
+          {/* 隐藏的加载状态描述，用于屏幕阅读器 */}
+          {loading && (
+            <span
+              id="loading-description"
+              style={{
+                position: 'absolute',
+                width: '1px',
+                height: '1px',
+                padding: '0',
+                margin: '-1px',
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                whiteSpace: 'nowrap',
+                border: '0',
+              }}
+            >
+              正在加载，请稍候
+            </span>
+          )}
         </button>
       </>
     );

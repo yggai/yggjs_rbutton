@@ -16,6 +16,30 @@ export type TechButtonSize = 'small' | 'medium' | 'large';
 export type TechButtonVariant = 'primary' | 'secondary' | 'danger' | 'success';
 
 /**
+ * 科技风按钮填充模式枚举
+ * solid: 实心填充（默认）
+ * outline: 边框模式，透明背景
+ * ghost: 幽灵模式，无背景无边框
+ * link: 链接模式，类似文本链接
+ */
+export type TechButtonFill = 'solid' | 'outline' | 'ghost' | 'link';
+
+/**
+ * 科技风按钮形状枚举
+ * default: 标准圆角
+ * rounded: 大圆角
+ * circular: 圆形（主要用于图标按钮）
+ * square: 方形（无圆角）
+ */
+export type TechButtonShape = 'default' | 'rounded' | 'circular' | 'square';
+
+/**
+ * 图标尺寸枚举
+ * 根据按钮尺寸自适应图标大小
+ */
+export type TechButtonIconSize = 'small' | 'medium' | 'large';
+
+/**
  * 科技风按钮组件属性接口
  * 继承原生HTML button元素的所有属性
  */
@@ -23,6 +47,7 @@ export interface TechButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   /**
    * 按钮内容
    * 可以是文本、图标或任何React节点
+   * 当使用iconOnly时，children将用作可访问性标签
    */
   children: ReactNode;
 
@@ -37,6 +62,43 @@ export interface TechButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
    * @default 'primary'
    */
   variant?: TechButtonVariant;
+
+  /**
+   * 填充模式
+   * @default 'solid'
+   */
+  fill?: TechButtonFill;
+
+  /**
+   * 按钮形状
+   * @default 'default'
+   */
+  shape?: TechButtonShape;
+
+  /**
+   * 左侧图标
+   * 可以是任何React节点（图标组件、SVG等）
+   */
+  iconLeft?: ReactNode;
+
+  /**
+   * 右侧图标
+   * 可以是任何React节点（图标组件、SVG等）
+   */
+  iconRight?: ReactNode;
+
+  /**
+   * 是否为纯图标按钮
+   * 为true时，只显示图标，children作为可访问性标签
+   * @default false
+   */
+  iconOnly?: boolean;
+
+  /**
+   * 图标尺寸
+   * 如果不指定，将根据按钮尺寸自动适配
+   */
+  iconSize?: TechButtonIconSize;
 
   /**
    * 是否为加载状态
@@ -58,6 +120,34 @@ export interface TechButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
    * @default false
    */
   fullWidth?: boolean;
+
+  /**
+   * 是否启用防重复点击保护
+   * 启用后，在指定延迟时间内防止重复点击
+   * @default false
+   */
+  preventDoubleClick?: boolean;
+
+  /**
+   * 防抖延迟时间（毫秒）
+   * 仅在 preventDoubleClick 为 true 时生效
+   * @default 300
+   */
+  debounceDelay?: number;
+
+  /**
+   * 是否启用响应式设计
+   * 根据屏幕尺寸自动适配大小
+   * @default false
+   */
+  responsive?: boolean;
+
+  /**
+   * 是否保证最小触摸目标尺寸
+   * 移动端最小点击区域（44px x 44px）
+   * @default false
+   */
+  minTouchTarget?: boolean;
 
   /**
    * 自定义类名
@@ -87,11 +177,22 @@ export interface TechButtonStyles {
   variants: Record<TechButtonVariant, React.CSSProperties>;
 
   /**
+   * 填充模式样式映射
+   */
+  fills: Record<TechButtonFill, React.CSSProperties>;
+
+  /**
+   * 形状样式映射
+   */
+  shapes: Record<TechButtonShape, React.CSSProperties>;
+
+  /**
    * 状态样式
    */
   states: {
     hover: React.CSSProperties;
     active: React.CSSProperties;
+    focus: React.CSSProperties;
     disabled: React.CSSProperties;
     loading: React.CSSProperties;
   };
@@ -102,6 +203,20 @@ export interface TechButtonStyles {
   effects: {
     glowing: React.CSSProperties;
     fullWidth: React.CSSProperties;
+    responsive: React.CSSProperties;
+    minTouchTarget: React.CSSProperties;
+  };
+
+  /**
+   * 图标样式
+   */
+  icons: {
+    base: React.CSSProperties;
+    sizes: Record<TechButtonIconSize, React.CSSProperties>;
+    left: React.CSSProperties;
+    right: React.CSSProperties;
+    only: React.CSSProperties;
+    loading: React.CSSProperties;
   };
 }
 
@@ -126,10 +241,14 @@ export interface TechTheme {
     textSecondary: string;
     disabled: string;
     background: string;
+    backgroundHover: string;
     border: string;
+    borderHover: string;
+    focus: string;
   };
   effects: {
     shadow: string;
+    shadowHover: string;
     glowPrimary: string;
     glowSecondary: string;
     glowDanger: string;
@@ -140,4 +259,19 @@ export interface TechTheme {
     normal: string;
     slow: string;
   };
+}
+
+/**
+ * 防重复点击Hook的返回值接口
+ */
+export interface UseDebounceClickReturn {
+  /**
+   * 是否正在防抖状态
+   */
+  isPending: boolean;
+  
+  /**
+   * 包装后的点击处理函数
+   */
+  handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
