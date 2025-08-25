@@ -11,13 +11,13 @@ import { ErrorBoundary } from './ErrorBoundary';
  * @param fallback 错误时显示的后备UI
  * @returns 包裹了错误边界的组件
  */
-export const withErrorBoundary = <P extends object>(
+export const withErrorBoundary = <P extends Record<string, any>>(
   Component: React.ComponentType<P>,
   fallback?: ReactNode
 ): React.ComponentType<P> => {
   const WrappedComponent: React.FC<P> = (props) => (
     <ErrorBoundary fallback={fallback}>
-      <Component {...props} />
+      <Component {...(props as P)} />
     </ErrorBoundary>
   );
 

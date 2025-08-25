@@ -13,6 +13,7 @@ import React from 'react';
 import type { BaseButtonProps } from '../../core/types';
 import type { UseButtonReturn, StyleCacheValue } from '../../core/types';
 import { minimalThemeDefinition } from './tokens';
+import { defaultStyleCache } from '../../core/utils/style-cache';
 
 /**
  * 极简主题按钮样式接口
@@ -395,7 +396,7 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
  * 样式缓存实例
  * 提高性能，避免重复创建样式对象
  */
-const styleCache = createStyleCache<MinimalButtonStyles>();
+const styleCache = defaultStyleCache;
 
 /**
  * 获取缓存的极简按钮样式

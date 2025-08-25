@@ -5,7 +5,8 @@
   "type": "module",
   "description": "TechButton 组件企业级示例项目 - 演示科技风按钮的所有功能特性",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode development",
+    "dev:strict": "vite",
     "build": "vite build",
     "build:check": "tsc && vite build",
     "build:dev": "vite build --mode development",

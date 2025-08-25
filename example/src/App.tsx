@@ -14,6 +14,7 @@ import React, { useState, useCallback, useMemo, Suspense, lazy } from 'react';
 import { css } from '@emotion/react';
 import type { ThemeMode } from '@/types';
 import { SunIcon, MoonIcon } from '@/components/Icons';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // 懒加载示例组件以提升性能
 const BasicExamples = lazy(() => import('@/examples/BasicExamples'));
@@ -591,9 +592,22 @@ const MainContent: React.FC<MainContentProps> = React.memo(({ theme, activeSecti
   // 渲染对应的示例组件
   const renderSection = useCallback((): React.ReactNode => {
     const SuspenseWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-      <Suspense fallback={<LoadingSpinner theme={theme} />}>
-        {children}
-      </Suspense>
+      <ErrorBoundary fallback={
+        <div css={css`
+          padding: 2rem;
+          text-align: center;
+          border: 2px dashed ${theme.colors.border};
+          border-radius: 8px;
+          color: ${theme.colors.textSecondary};
+        `}>
+          <h3>组件加载失败</h3>
+          <p>该示例组件暂时无法显示，请稍后重试。</p>
+        </div>
+      }>
+        <Suspense fallback={<LoadingSpinner theme={theme} />}>
+          {children}
+        </Suspense>
+      </ErrorBoundary>
     );
 
     switch (activeSection) {
@@ -767,18 +781,52 @@ const App: React.FC = () => {
   `, [currentTheme]);
 
   return (
-    <div css={appStyles}>
-      <Navbar 
-        theme={currentTheme} 
-        onThemeChange={handleThemeChange}
-        currentSection={activeSection}
-        onSectionChange={handleSectionChange}
-      />
-      <MainContent 
-        theme={currentTheme} 
-        activeSection={activeSection} 
-      />
-    </div>
+    <ErrorBoundary fallback={
+      <div css={css`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+        text-align: center;
+        background-color: #1a1a1a;
+        color: #ffffff;
+      `}>
+        <h1>应用程序出现错误</h1>
+        <p>请刷新页面重试，如果问题持续存在，请联系开发团队。</p>
+        <button 
+          onClick={() => window.location.reload()}
+          css={css`
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            &:hover {
+              background-color: #0052a3;
+            }
+          `}
+        >
+          刷新页面
+        </button>
+      </div>
+    }>
+      <div css={appStyles}>
+        <Navbar 
+          theme={currentTheme} 
+          onThemeChange={handleThemeChange}
+          currentSection={activeSection}
+          onSectionChange={handleSectionChange}
+        />
+        <MainContent 
+          theme={currentTheme} 
+          activeSection={activeSection} 
+        />
+      </div>
+    </ErrorBoundary>
   );
 };
 

@@ -327,7 +327,7 @@ export const DEVELOPMENT_CONSTANTS = {
   PERFORMANCE_THRESHOLDS: {
     RENDER_TIME: 16, // ms (60fps)
     UPDATE_TIME: 8, // ms
-    MEMORY_USAGE: 10 * 1024 * 1024, // 10MB
+    MEMORY_USAGE: 50 * 1024 * 1024, // 50MB
     CACHE_HIT_RATE: 0.8, // 80%
   },
   
