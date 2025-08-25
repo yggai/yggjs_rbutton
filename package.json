@@ -2,29 +2,53 @@
   "name": "yggjs_rbutton",
   "version": "1.0.0",
   "description": "专为React打造的按钮组件库",
-  "main": "./dist/yggjs_rbutton.umd.js",
-  "module": "./dist/yggjs_rbutton.es.js",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/yggjs_rbutton.es.js",
-      "require": "./dist/yggjs_rbutton.umd.js"
-    }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./tech": {
+      "types": "./dist/tech/index.d.ts",
+      "import": "./dist/tech/index.esm.js",
+      "require": "./dist/tech/index.cjs.js"
+    },
+    "./tech/styles": {
+      "types": "./dist/tech/styles.d.ts",
+      "import": "./dist/tech/styles.esm.js",
+      "require": "./dist/tech/styles.cjs.js"
+    },
+    "./tech/types": {
+      "types": "./dist/tech/types.d.ts",
+      "import": "./dist/tech/types.esm.js",
+      "require": "./dist/tech/types.cjs.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "npx rimraf dist && npx vite build",
+    "build": "cross-env NODE_ENV=production npx rimraf dist && npx vite build",
+    "build:dev": "cross-env NODE_ENV=development npx rimraf dist && npx vite build",
+    "build:analyze": "cross-env ANALYZE=true npm run build",
     "test": "jest --config jest.config.json",
+    "test:coverage": "jest --config jest.config.json --coverage",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "type-check": "tsc --noEmit",
-    "prepublishOnly": "npm run build",
-    "prepare": "npm run build"
+    "type-check:watch": "tsc --noEmit --watch",
+    "prepublishOnly": "npm run lint && npm run type-check && npm run test && npm run build",
+    "prepare": "npm run build",
+    "size-check": "size-limit",
+    "clean": "rimraf dist node_modules/.cache"
   },
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "**/styles.ts"
   ],
   "repository": {
     "type": "git",
@@ -44,6 +68,7 @@
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-react": "^7.27.1",
     "@eslint/js": "^9.21.0",
+    "@size-limit/preset-small-lib": "^11.2.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^30.0.0",
@@ -52,6 +77,7 @@
     "@typescript-eslint/eslint-plugin": "^8.16.0",
     "@typescript-eslint/parser": "^8.16.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "cross-env": "^7.0.3",
     "eslint": "^9.21.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^5.1.0",
@@ -61,6 +87,9 @@
     "jest-transform-css": "^6.0.3",
     "react": "^19.1.1",
     "rimraf": "^5.0.9",
+    "rollup-plugin-analyzer": "^4.0.0",
+    "size-limit": "^11.2.0",
+    "terser": "^5.43.1",
     "ts-jest": "^29.4.1",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.16.0",
