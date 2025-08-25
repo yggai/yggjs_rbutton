@@ -588,4 +588,234 @@ describe('TechButton', () => {
       expect(screen.getByText('缓存测试2')).toBeInTheDocument();
     });
   });
+
+  /**
+   * 第三阶段高级功能测试
+   */
+  describe('路由集成支持', () => {
+    test('应该支持渲染为链接', () => {
+      render(
+        <TechButton as="a" href="https://example.com" target="_blank">
+          外部链接
+        </TechButton>
+      );
+      
+      const link = screen.getByRole('link');
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute('href', 'https://example.com');
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAttribute('data-as', 'a');
+    });
+
+    test('应该在链接模式下正确处理禁用状态', () => {
+      render(
+        <TechButton as="a" href="https://example.com" disabled>
+          禁用链接
+        </TechButton>
+      );
+      
+      const link = screen.getByRole('link');
+      expect(link).toHaveAttribute('aria-disabled', 'true');
+      expect(link).toHaveAttribute('tabIndex', '-1');
+    });
+  });
+
+  describe('国际化文本支持', () => {
+    test('应该支持自定义加载文本', () => {
+      render(
+        <TechButton 
+          loading 
+          i18n={{ loadingText: 'Loading...', ariaLabel: 'Submit' }}
+        >
+          提交
+        </TechButton>
+      );
+      
+      expect(screen.getAllByText('Loading...').length).toBeGreaterThan(0);
+      expect(screen.queryByText('加载中...')).not.toBeInTheDocument();
+    });
+
+    test('应该支持自定义可访问性标签', () => {
+      render(
+        <TechButton 
+          iconOnly 
+          iconLeft={<TestIcon />} 
+          i18n={{ ariaLabel: 'Custom Label' }}
+        >
+          图标按钮
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      expect(button).toHaveAttribute('aria-label', 'Custom Label');
+    });
+  });
+
+  describe('高级可访问性', () => {
+    test('应该支持高对比度模式', () => {
+      render(
+        <TechButton accessibility={{ highContrast: true }}>
+          高对比度按钮
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      expect(button).toHaveAttribute('data-high-contrast', 'true');
+    });
+
+    test('应该支持减少动画模式', () => {
+      render(
+        <TechButton accessibility={{ reduceMotion: true }}>
+          减少动画按钮
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      expect(button).toHaveAttribute('data-reduce-motion', 'true');
+    });
+
+    test('应该支持自定义ARIA描述', () => {
+      render(
+        <TechButton accessibility={{ ariaDescribedBy: 'help-text' }}>
+          带描述按钮
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      expect(button).toHaveAttribute('aria-describedby', 'help-text');
+    });
+
+    test('减少动画模式下加载动画应该被禁用', () => {
+      render(
+        <TechButton 
+          loading 
+          accessibility={{ reduceMotion: true }}
+        >
+          加载中
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      const loadingSpinner = button.querySelector('span[aria-hidden="true"]');
+      expect(loadingSpinner).toHaveStyle('animation: none');
+    });
+  });
+
+  describe('图标尺寸规格测试', () => {
+    test('应该支持sm图标尺寸', () => {
+      render(
+        <TechButton iconLeft={<TestIcon />} iconSize="sm">
+          小图标
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      expect(button).toBeInTheDocument();
+      expect(screen.getByTestId('test-icon')).toBeInTheDocument();
+    });
+
+    test('应该支持md图标尺寸', () => {
+      render(
+        <TechButton iconLeft={<TestIcon />} iconSize="md">
+          中图标
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      expect(button).toBeInTheDocument();
+      expect(screen.getByTestId('test-icon')).toBeInTheDocument();
+    });
+
+    test('应该支持lg图标尺寸', () => {
+      render(
+        <TechButton iconLeft={<TestIcon />} iconSize="lg">
+          大图标
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      expect(button).toBeInTheDocument();
+      expect(screen.getByTestId('test-icon')).toBeInTheDocument();
+    });
+
+    test('按钮尺寸与图标尺寸应该正确映射', () => {
+      const { rerender } = render(
+        <TechButton size="small" iconLeft={<TestIcon />}>
+          小按钮
+        </TechButton>
+      );
+      
+      // small -> sm 映射
+      expect(screen.getByRole('button')).toHaveAttribute('data-size', 'small');
+      
+      rerender(
+        <TechButton size="medium" iconLeft={<TestIcon />}>
+          中按钮
+        </TechButton>
+      );
+      
+      // medium -> md 映射
+      expect(screen.getByRole('button')).toHaveAttribute('data-size', 'medium');
+      
+      rerender(
+        <TechButton size="large" iconLeft={<TestIcon />}>
+          大按钮
+        </TechButton>
+      );
+      
+      // large -> lg 映射
+      expect(screen.getByRole('button')).toHaveAttribute('data-size', 'large');
+    });
+  });
+
+  describe('企业级功能组合测试', () => {
+    test('应该支持所有高级功能的组合使用', () => {
+      render(
+        <TechButton
+          as="button"
+          size="large"
+          variant="primary"
+          fill="solid"
+          shape="rounded"
+          iconLeft={<TestIcon />}
+          iconSize="lg"
+          theme="dark"
+          dir="ltr"
+          glowing
+          preventDoubleClick
+          debounceDelay={500}
+          responsive
+          minTouchTarget
+          i18n={{ ariaLabel: 'Advanced button' }}
+          accessibility={{ 
+            highContrast: true, 
+            reduceMotion: false,
+            ariaDescribedBy: 'advanced-help'
+          }}
+          className="custom-advanced-btn"
+        >
+          企业级按钮
+        </TechButton>
+      );
+      
+      const button = screen.getByRole('button');
+      
+      // 验证所有属性都正确设置
+      expect(button).toHaveAttribute('data-size', 'large');
+      expect(button).toHaveAttribute('data-variant', 'primary');
+      expect(button).toHaveAttribute('data-fill', 'solid');
+      expect(button).toHaveAttribute('data-shape', 'rounded');
+      expect(button).toHaveAttribute('data-theme', 'dark');
+      expect(button).toHaveAttribute('data-dir', 'ltr');
+      expect(button).toHaveAttribute('data-glowing', 'true');
+      expect(button).toHaveAttribute('data-responsive', 'true');
+      expect(button).toHaveAttribute('data-min-touch-target', 'true');
+      expect(button).toHaveAttribute('data-as', 'button');
+      expect(button).toHaveAttribute('data-high-contrast', 'true');
+      expect(button).toHaveAttribute('data-reduce-motion', 'false');
+      expect(button).toHaveAttribute('aria-describedby', 'advanced-help');
+      expect(button).toHaveClass('custom-advanced-btn');
+      expect(screen.getByTestId('test-icon')).toBeInTheDocument();
+    });
+  });
 });

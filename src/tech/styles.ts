@@ -369,17 +369,17 @@ export const createTechButtonStyles = (theme?: TechTheme): TechButtonStyles => {
         transition: `all ${transitions.fast}`,
       },
       sizes: {
-        small: {
+        sm: {
           width: '16px',
           height: '16px',
           fontSize: '14px',
         },
-        medium: {
+        md: {
           width: '18px',
           height: '18px',
           fontSize: '16px',
         },
-        large: {
+        lg: {
           width: '20px',
           height: '20px',
           fontSize: '18px',
@@ -524,12 +524,12 @@ export const getGlowStyles = (variant: TechButtonVariant): React.CSSProperties =
 export const getIconSizeForButton = (buttonSize: string): TechButtonIconSize => {
   switch (buttonSize) {
     case 'small':
-      return 'small';
+      return 'sm';
     case 'large':
-      return 'large';
+      return 'lg';
     case 'medium':
     default:
-      return 'medium';
+      return 'md';
   }
 };
 

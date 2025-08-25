@@ -35,9 +35,9 @@ export type TechButtonShape = 'default' | 'rounded' | 'circular' | 'square';
 
 /**
  * 图标尺寸枚举
- * 根据按钮尺寸自适应图标大小
+ * 根据改进计划规格，使用简化的尺寸命名
  */
-export type TechButtonIconSize = 'small' | 'medium' | 'large';
+export type TechButtonIconSize = 'sm' | 'md' | 'lg';
 
 /**
  * 科技风按钮组件属性接口
@@ -160,6 +160,56 @@ export interface TechButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
    * @default 'light'
    */
   theme?: 'light' | 'dark' | 'auto';
+
+  /**
+   * 路由集成支持 - 组件渲染类型
+   * 支持渲染为按钮、链接或自定义组件
+   * @default 'button'
+   */
+  as?: 'button' | 'a' | React.ComponentType<unknown>;
+
+  /**
+   * 链接地址
+   * 当as='a'时使用
+   */
+  href?: string;
+
+  /**
+   * 链接打开方式
+   * 当as='a'时使用
+   */
+  target?: '_blank' | '_self' | '_parent' | '_top';
+
+  /**
+   * 国际化文本配置
+   * 支持加载状态文本和可访问性标签的国际化
+   */
+  i18n?: {
+    loadingText?: string;
+    ariaLabel?: string;
+  };
+
+  /**
+   * 高级可访问性配置
+   */
+  accessibility?: {
+    /**
+     * 是否启用高对比度模式适配
+     * @default false
+     */
+    highContrast?: boolean;
+    
+    /**
+     * 是否减少动画效果（支持 prefers-reduced-motion）
+     * @default false
+     */
+    reduceMotion?: boolean;
+    
+    /**
+     * 自定义ARIA描述
+     */
+    ariaDescribedBy?: string;
+  };
 
   /**
    * 自定义类名
