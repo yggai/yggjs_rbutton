@@ -383,7 +383,7 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
       },
       focusVisible: {
         // 仅在键盘导航时显示焦点环
-        '&:focus-visible': {
+        '&:focusVisible': {
           outline: `2px solid ${colors.default.primary[500]}`,
           outlineOffset: '2px',
         },

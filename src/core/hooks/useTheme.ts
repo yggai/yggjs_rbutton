@@ -8,17 +8,58 @@
  * @author YggJS Team
  */
 
-import React, { useContext, useMemo, useCallback, useEffect, useState } from 'react';
+import React, { useMemo, useCallback, useEffect, useState } from 'react';
 import type { 
   ThemeDefinition, 
   UseThemeReturn,
-  ThemeVariant
+  DesignTokens,
+  ThemeUtilities,
 } from '../types';
 import { themeRegistry } from '../theme/registry';
 import { useThemeManager } from '../theme/manager';
 import { generateThemeStyles, generateButtonThemeStyles } from '../utils/theme-style-generator';
 import { defaultStyleCache, StyleCacheUtils } from '../utils';
 import { THEME_CONSTANTS } from '../../shared/constants';
+
+/**
+ * 主题上下文类型定义
+ * 
+ * 定义主题上下文中传递的数据结构
+ */
+interface ThemeContextType {
+  /**
+   * 当前活动主题
+   */
+  theme: ThemeDefinition | null;
+  
+  /**
+   * 当前主题的设计令牌
+   */
+  tokens: DesignTokens;
+  
+  /**
+   * 主题工具函数
+   */
+  utils: ThemeUtilities;
+  
+  /**
+   * 设置主题的函数
+   */
+  setTheme: (themeId: string) => Promise<void>;
+  
+  /**
+   * 获取可用主题列表
+   */
+  getAvailableThemes: () => ThemeDefinition[];
+  
+  /**
+   * 主题状态
+   */
+  state: {
+    isLoading: boolean;
+    error: Error | null;
+  };
+}
 
 /**
  * 主题上下文
@@ -37,7 +78,7 @@ export const ThemeContext = React.createContext<ThemeContextType | null>(null);
  */
 export function useTheme(): UseThemeReturn {
   const { state, actions } = useThemeManager();
-  const { currentTheme, currentThemeId, currentVariant } = state;
+  const { currentTheme, currentVariant } = state;
   
   if (!currentTheme) {
     throw new Error('No theme is currently active. Make sure ThemeManagerProvider is properly configured.');
@@ -51,17 +92,20 @@ export function useTheme(): UseThemeReturn {
       version: currentTheme.version,
     });
 
-    let cachedTokens = defaultStyleCache.get(cacheKey);
+    let cachedTokens = defaultStyleCache.get(cacheKey) as DesignTokens;
     if (!cachedTokens) {
       // 合并基础令牌和变体令牌
-      let mergedTokens = { ...currentTheme.tokens };
+      const mergedTokens: DesignTokens = { ...currentTheme.tokens };
       
       if (currentVariant && currentTheme.variants?.[currentVariant]) {
         const variant = currentTheme.variants[currentVariant];
         // 深度合并变体令牌
         Object.entries(variant).forEach(([category, variantTokens]) => {
-          if (variantTokens && mergedTokens[category]) {
-            mergedTokens[category] = { ...mergedTokens[category], ...variantTokens };
+          if (variantTokens && mergedTokens[category as keyof DesignTokens]) {
+            (mergedTokens as any)[category] = { 
+              ...(mergedTokens as any)[category], 
+              ...(variantTokens as any) 
+            };
           }
         });
       }

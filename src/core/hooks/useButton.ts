@@ -284,10 +284,14 @@ export function useButton(config: UseButtonConfig & {
 
     return generateButtonAriaProps({
       disabled,
-      loading,
-      // 这里可以根据需要添加更多属性
+      loading: isLoading,
+      pressed: config.toggle ? isPressed : undefined,
+      label: config.ariaLabel,
+      describedBy: config.ariaDescribedBy,
+      iconOnly: config.iconOnly,
+      children: config.children,
     });
-  }, [enableA11yEnhancements, disabled, loading]);
+  }, [enableA11yEnhancements, disabled, isLoading, isPressed, config.toggle, config.ariaLabel, config.ariaDescribedBy, config.iconOnly, config.children]);
 
   // 组合按钮属性
   const buttonProps = useMemo(() => ({

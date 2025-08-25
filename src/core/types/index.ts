@@ -47,6 +47,8 @@ export type {
   ThemeUtilities,
   ThemeMetadata,
   ThemeDefinition,
+  ThemeVariant,
+  ThemeRegistry,
   ThemeContext,
   ThemeProviderProps,
   UseThemeReturn,

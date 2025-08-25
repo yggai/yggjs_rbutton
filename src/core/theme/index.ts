@@ -158,7 +158,7 @@ export const ThemeUtils = {
     variant?: string
   ): any => {
     const pathSegments = tokenPath.split('.');
-    let tokens = theme.tokens;
+    const tokens = theme.tokens;
     
     // 如果指定了变体，尝试从变体中获取
     if (variant && theme.variants && theme.variants[variant]) {

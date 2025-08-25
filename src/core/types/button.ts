@@ -281,6 +281,32 @@ export interface UseButtonConfig {
    * @default true
    */
   enableA11yEnhancements?: boolean;
+  
+  /**
+   * 是否为切换按钮
+   * @default false
+   */
+  toggle?: boolean;
+  
+  /**
+   * ARIA标签
+   */
+  ariaLabel?: string;
+  
+  /**
+   * ARIA描述ID
+   */
+  ariaDescribedBy?: string;
+  
+  /**
+   * 是否为纯图标按钮
+   */
+  iconOnly?: boolean;
+  
+  /**
+   * 按钮子元素
+   */
+  children?: React.ReactNode;
 }
 
 /**
@@ -295,15 +321,24 @@ export interface UseButtonReturn {
   buttonProps: {
     type: 'button';
     disabled: boolean;
-    'aria-busy': boolean;
-    'aria-label'?: string;
-    'aria-describedby'?: string;
     tabIndex: number;
-    role: string;
     onClick: ButtonClickHandler;
     onKeyDown: ButtonKeyboardHandler;
     onFocus: () => void;
     onBlur: () => void;
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+    onMouseDown: () => void;
+    onMouseUp: () => void;
+    onTouchStart: () => void;
+    onTouchEnd: () => void;
+    role?: string;
+    'aria-busy'?: boolean;
+    'aria-label'?: string;
+    'aria-describedby'?: string;
+    'aria-pressed'?: boolean;
+    'aria-expanded'?: boolean;
+    'aria-disabled'?: boolean;
   };
   
   /**
