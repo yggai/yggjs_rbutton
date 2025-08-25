@@ -10,7 +10,8 @@
       "Bash(npm run build:*)",
       "mcp__sequential-thinking__sequentialthinking",
       "Bash(npx tsc:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(npm run test:*)"
     ],
     "deny": [],
     "ask": [],

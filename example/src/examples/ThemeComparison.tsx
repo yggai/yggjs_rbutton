@@ -7,12 +7,11 @@
  * @version 1.0.0
  * @author YggJS Team
  */
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { css } from '@emotion/react';
 
 // 导入按钮组件
 import { TechButton } from 'yggjs_rbutton';
-import { MinimalButton } from 'yggjs_rbutton/minimal';
 
 /**
  * 组件属性接口
@@ -614,40 +613,41 @@ const InteractiveButtonComparison: React.FC<{ theme: ThemeComparisonProps['theme
               <h4 className="theme-title">极简主题</h4>
             </div>
             <div className="button-showcase">
-              <MinimalButton 
+              <TechButton 
                 variant={selectedVariant} 
                 size={selectedSize}
                 fill={selectedFill}
                 className="primary-button"
+                style={{ opacity: 0.7 }}
               >
                 {selectedVariant} {selectedSize}
-              </MinimalButton>
+              </TechButton>
               
               {showStates && (
                 <div className="state-buttons">
                   <div className="state-group">
                     <span className="state-label">正常：</span>
-                    <MinimalButton variant={selectedVariant} size={selectedSize} fill={selectedFill}>
+                    <TechButton variant={selectedVariant} size={selectedSize} fill={selectedFill}>
                       正常
-                    </MinimalButton>
+                    </TechButton>
                   </div>
                   <div className="state-group">
                     <span className="state-label">悬浮：</span>
-                    <MinimalButton variant={selectedVariant} size={selectedSize} fill={selectedFill} style={{ opacity: 0.8 }}>
+                    <TechButton variant={selectedVariant} size={selectedSize} fill={selectedFill} style={{ opacity: 0.8 }}>
                       悬浮
-                    </MinimalButton>
+                    </TechButton>
                   </div>
                   <div className="state-group">
                     <span className="state-label">禁用：</span>
-                    <MinimalButton variant={selectedVariant} size={selectedSize} fill={selectedFill} disabled>
+                    <TechButton variant={selectedVariant} size={selectedSize} fill={selectedFill} disabled>
                       禁用
-                    </MinimalButton>
+                    </TechButton>
                   </div>
                   <div className="state-group">
                     <span className="state-label">加载：</span>
-                    <MinimalButton variant={selectedVariant} size={selectedSize} fill={selectedFill} loading>
+                    <TechButton variant={selectedVariant} size={selectedSize} fill={selectedFill} loading>
                       加载
-                    </MinimalButton>
+                    </TechButton>
                   </div>
                 </div>
               )}

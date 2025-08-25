@@ -12,7 +12,6 @@ import { css } from '@emotion/react';
 
 // 导入按钮组件
 import { TechButton } from 'yggjs_rbutton';
-import { MinimalButton } from 'yggjs_rbutton/minimal';
 
 /**
  * 组件属性接口
@@ -762,9 +761,9 @@ const MemoryOptimizationDemo: React.FC<{ theme: PerformanceExamplesProps['theme'
                       {i + 1}
                     </TechButton>
                   ) : (
-                    <MinimalButton size="small" variant="secondary">
+                    <TechButton size="small" variant="secondary" fill="outline">
                       {i + 1}
-                    </MinimalButton>
+                    </TechButton>
                   )}
                 </div>
               ))}

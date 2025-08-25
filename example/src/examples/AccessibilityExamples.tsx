@@ -7,12 +7,11 @@
  * @version 1.0.0
  * @author YggJS Team
  */
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { css } from '@emotion/react';
 
 // 导入按钮组件
 import { TechButton } from 'yggjs_rbutton';
-import { MinimalButton } from 'yggjs_rbutton/minimal';
 
 /**
  * 组件属性接口
@@ -471,9 +470,9 @@ const KeyboardNavigationDemo: React.FC<{
     { label: '成功按钮', variant: 'success' as const, component: TechButton },
     { label: '警告按钮', variant: 'warning' as const, component: TechButton },
     { label: '危险按钮', variant: 'danger' as const, component: TechButton },
-    { label: '极简主要', variant: 'primary' as const, component: MinimalButton },
-    { label: '极简次要', variant: 'secondary' as const, component: MinimalButton },
-    { label: '极简成功', variant: 'success' as const, component: MinimalButton },
+    { label: '极简主要', variant: 'primary' as const, component: TechButton, fill: 'outline' },
+    { label: '极简次要', variant: 'secondary' as const, component: TechButton, fill: 'ghost' },
+    { label: '极简成功', variant: 'success' as const, component: TechButton, fill: 'outline' },
   ];
 
   return (

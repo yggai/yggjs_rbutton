@@ -13,9 +13,8 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { css } from '@emotion/react';
 
-// 导入按钮组件（需要根据实际的组件库结构调整）
+// 导入按钮组件
 import { TechButton } from 'yggjs_rbutton';
-import { MinimalButton } from 'yggjs_rbutton/minimal';
 
 /**
  * 组件属性接口
@@ -277,15 +276,15 @@ const ThemeComparisonDemo: React.FC<{ theme: BasicExamplesProps['theme'] }> = Re
             极简主题
           </h3>
           <div className="theme-buttons">
-            <MinimalButton variant={selectedVariant} size={selectedSize}>
+            <TechButton variant={selectedVariant} size={selectedSize} fill="outline">
               {selectedVariant} {selectedSize}
-            </MinimalButton>
-            <MinimalButton variant={selectedVariant} size={selectedSize} disabled>
+            </TechButton>
+            <TechButton variant={selectedVariant} size={selectedSize} fill="outline" disabled>
               禁用状态
-            </MinimalButton>
-            <MinimalButton variant={selectedVariant} size={selectedSize} loading>
+            </TechButton>
+            <TechButton variant={selectedVariant} size={selectedSize} fill="outline" loading>
               加载中...
-            </MinimalButton>
+            </TechButton>
           </div>
         </div>
       </div>

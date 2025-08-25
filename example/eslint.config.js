@@ -48,6 +48,7 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       'react/prop-types': 'off', // 使用 TypeScript 进行类型检查
       'react/react-in-jsx-scope': 'off', // React 17+ 不需要导入 React
+      'react/no-unknown-property': ['error', { ignore: ['css'] }], // 允许 Emotion 的 css prop
     },
   },
 ];

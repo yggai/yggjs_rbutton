@@ -10,13 +10,13 @@
  */
 
 import React, { forwardRef } from 'react';
-import type { BaseButtonProps } from '../../core/types';
-import { createThemedButton } from '../../core/components/BaseButton';
+import type { BaseButtonProps } from '../../../core/types';
+import { createThemedButton } from '../../../core/components/BaseButton';
 import {
   computeMinimalButtonStyles,
   renderMinimalLoadingIndicator,
   renderMinimalButtonContent,
-} from './styles';
+} from '../styles';
 
 /**
  * 极简主题按钮属性接口

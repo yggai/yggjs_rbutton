@@ -12,8 +12,7 @@
 import React from 'react';
 import type { BaseButtonProps } from '../../core/types';
 import type { UseButtonReturn, StyleCacheValue } from '../../core/types';
-import { minimalThemeDefinition } from '../tokens';
-import { createStyleCache } from '../../core/utils/style-cache';
+import { minimalThemeDefinition } from './tokens';
 
 /**
  * 极简主题按钮样式接口

@@ -7,12 +7,11 @@
  * @version 1.0.0
  * @author YggJS Team
  */
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { css } from '@emotion/react';
 
 // 导入按钮组件
-import { TechButton } from 'yggjs_rbutton';
-import { MinimalButton } from 'yggjs_rbutton/minimal';
+import { TechButton, MinimalButton } from 'yggjs_rbutton';
 
 /**
  * 组件属性接口
@@ -979,7 +978,7 @@ const StateManagementDemo: React.FC<{ theme: IntegrationExamplesProps['theme'] }
             >
               {globalState.loading.userProfile ? '更新中...' : '更新用户偏好'}
             </TechButton>
-            <MinimalButton
+            <TechButton
               variant="secondary"
               size="small"
               onClick={() => dispatch({
@@ -987,9 +986,10 @@ const StateManagementDemo: React.FC<{ theme: IntegrationExamplesProps['theme'] }
                 payload: { key: 'notifications', value: !globalState.user.preferences.notifications }
               })}
               className="action-button"
+              fill="outline"
             >
               切换通知状态
-            </MinimalButton>
+            </TechButton>
           </div>
         </div>
 

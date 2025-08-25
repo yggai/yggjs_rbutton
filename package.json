@@ -26,6 +26,16 @@
       "import": "./dist/tech/types.esm.js",
       "require": "./dist/tech/types.cjs.js"
     },
+    "./minimal": {
+      "types": "./dist/themes/minimal/index.d.ts",
+      "import": "./dist/themes/minimal/index.esm.js",
+      "require": "./dist/themes/minimal/index.cjs.js"
+    },
+    "./minimal/components": {
+      "types": "./dist/themes/minimal/components/index.d.ts",
+      "import": "./dist/themes/minimal/components/index.esm.js",
+      "require": "./dist/themes/minimal/components/index.cjs.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
