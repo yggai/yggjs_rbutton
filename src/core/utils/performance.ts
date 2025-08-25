@@ -8,6 +8,7 @@
  * @author YggJS Team
  */
 
+import React from 'react';
 import type { PerformanceMetrics, DevModeFlags } from '../types';
 import { DEVELOPMENT_CONSTANTS } from '../../shared/constants';
 

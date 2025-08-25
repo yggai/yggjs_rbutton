@@ -403,7 +403,15 @@ const styleCache = defaultStyleCache;
  * 使用缓存机制提升性能
  */
 export function getMinimalButtonStyles(): MinimalButtonStyles {
-  return styleCache.get('minimal-button', createMinimalButtonStyles);
+  const cached = styleCache.get('minimal-button');
+  if (cached) {
+    return cached as MinimalButtonStyles;
+  }
+  
+  // 如果缓存中不存在，创建新的样式并缓存
+  const styles = createMinimalButtonStyles();
+  styleCache.set('minimal-button', styles);
+  return styles;
 }
 
 /**
