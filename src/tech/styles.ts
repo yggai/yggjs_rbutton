@@ -69,11 +69,97 @@ export const techTheme: TechTheme = {
 };
 
 /**
+ * 暗色主题配置
+ * 为暗色模式优化的颜色和效果
+ */
+export const techDarkTheme: TechTheme = {
+  colors: {
+    // 主色调 - 更亮的科技蓝
+    primary: '#00d4ff',
+    primaryHover: '#33ddff',
+    primaryActive: '#00bfea',
+
+    // 次要色调 - 更亮的灰色
+    secondary: '#9ca3af',
+    secondaryHover: '#d1d5db',
+    secondaryActive: '#f3f4f6',
+
+    // 危险色调
+    danger: '#f87171',
+    dangerHover: '#fca5a5',
+    dangerActive: '#ef4444',
+
+    // 成功色调
+    success: '#34d399',
+    successHover: '#6ee7b7',
+    successActive: '#10b981',
+
+    // 文本颜色
+    text: '#ffffff',
+    textSecondary: '#d1d5db',
+
+    // 禁用状态
+    disabled: '#6b7280',
+
+    // 背景和边框 - 暗色模式适配
+    background: 'rgba(17, 24, 39, 0.9)',
+    backgroundHover: 'rgba(31, 41, 55, 0.95)',
+    border: 'rgba(75, 85, 99, 0.5)',
+    borderHover: 'rgba(156, 163, 175, 0.7)',
+
+    // 焦点颜色
+    focus: '#00d4ff',
+  },
+  effects: {
+    // 阴影效果 - 暗色模式调整
+    shadow: '0 4px 14px 0 rgba(0, 0, 0, 0.7)',
+    shadowHover: '0 8px 25px 0 rgba(0, 0, 0, 0.4)',
+    
+    // 发光效果 - 增强发光效果
+    glowPrimary: '0 0 25px rgba(0, 212, 255, 0.8)',
+    glowSecondary: '0 0 25px rgba(156, 163, 175, 0.8)',
+    glowDanger: '0 0 25px rgba(248, 113, 113, 0.8)',
+    glowSuccess: '0 0 25px rgba(52, 211, 153, 0.8)',
+  },
+  transitions: {
+    fast: '0.15s ease-in-out',
+    normal: '0.3s ease-in-out',
+    slow: '0.5s ease-in-out',
+  },
+};
+
+/**
+ * 亮色主题配置（原有的主题作为亮色主题）
+ */
+export const techLightTheme: TechTheme = techTheme;
+
+/**
+ * 获取当前主题
+ * 根据主题模式返回相应的主题配置
+ */
+export const getCurrentTheme = (themeMode: 'light' | 'dark' | 'auto' = 'light'): TechTheme => {
+  if (themeMode === 'dark') {
+    return techDarkTheme;
+  }
+  
+  if (themeMode === 'auto') {
+    // 检查系统主题偏好
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      const prefersColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+      return prefersColorScheme.matches ? techDarkTheme : techLightTheme;
+    }
+  }
+  
+  return techLightTheme;
+};
+
+/**
  * 生成CSS-in-JS样式对象的工厂函数
  * v1.1.0 - 新增图标、填充模式、形状变体等样式支持
  */
-export const createTechButtonStyles = (): TechButtonStyles => {
-  const { colors, effects, transitions } = techTheme;
+export const createTechButtonStyles = (theme?: TechTheme): TechButtonStyles => {
+  const currentTheme = theme || techTheme;
+  const { colors, effects, transitions } = currentTheme;
 
   return {
     // 基础样式 - 所有按钮共享的样式
@@ -482,18 +568,23 @@ export const getResponsiveStyles = (): React.CSSProperties => {
 /**
  * 样式缓存
  * 提高性能，避免重复创建样式对象
+ * 支持不同主题的缓存
  */
-let stylesCache: TechButtonStyles | null = null;
+const stylesCache = new Map<string, TechButtonStyles>();
 
 /**
  * 获取缓存的样式对象
  * 第一次调用时创建样式，之后返回缓存的样式
  */
-export const getTechButtonStyles = (): TechButtonStyles => {
-  if (!stylesCache) {
-    stylesCache = createTechButtonStyles();
+export const getTechButtonStyles = (themeMode: 'light' | 'dark' | 'auto' = 'light'): TechButtonStyles => {
+  const cacheKey = themeMode;
+  
+  if (!stylesCache.has(cacheKey)) {
+    const theme = getCurrentTheme(themeMode);
+    stylesCache.set(cacheKey, createTechButtonStyles(theme));
   }
-  return stylesCache;
+  
+  return stylesCache.get(cacheKey)!;
 };
 
 /**
@@ -501,7 +592,63 @@ export const getTechButtonStyles = (): TechButtonStyles => {
  * 主要用于测试或主题切换时重置样式
  */
 export const clearStylesCache = (): void => {
-  stylesCache = null;
+  stylesCache.clear();
+};
+
+/**
+ * 获取RTL语言支持的样式
+ * 根据文本方向调整图标位置和内容对齐
+ */
+export const getRTLStyles = (dir: 'ltr' | 'rtl' | 'auto'): React.CSSProperties => {
+  if (dir === 'rtl') {
+    return {
+      direction: 'rtl' as const,
+      textAlign: 'right' as const,
+    };
+  }
+  
+  if (dir === 'auto') {
+    return {
+      textAlign: 'start' as const,
+    };
+  }
+  
+  return {
+    direction: 'ltr' as const,
+    textAlign: 'left' as const,
+  };
+};
+
+/**
+ * 获取RTL语言下的图标样式
+ * 在RTL模式下，左右图标的位置需要互换
+ */
+export const getRTLIconStyles = (
+  position: 'left' | 'right' | 'only',
+  dir: 'ltr' | 'rtl' | 'auto'
+): React.CSSProperties => {
+  if (dir !== 'rtl') {
+    return {};
+  }
+  
+  // 在RTL模式下，左图标变为右图标，右图标变为左图标
+  if (position === 'left') {
+    return {
+      order: 1,
+      marginLeft: '0',
+      marginRight: '0',
+    };
+  }
+  
+  if (position === 'right') {
+    return {
+      order: -1,
+      marginRight: '0',
+      marginLeft: '0',
+    };
+  }
+  
+  return {};
 };
 
 /**

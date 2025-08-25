@@ -150,6 +150,18 @@ export interface TechButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   minTouchTarget?: boolean;
 
   /**
+   * 文本方向，支持RTL语言
+   * @default 'ltr'
+   */
+  dir?: 'ltr' | 'rtl' | 'auto';
+
+  /**
+   * 主题模式
+   * @default 'light'
+   */
+  theme?: 'light' | 'dark' | 'auto';
+
+  /**
    * 自定义类名
    * 用于扩展样式
    */

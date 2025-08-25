@@ -8,6 +8,8 @@ import {
   getCombinedStyles,
   getIconSizeForButton,
   getShapeAdjustedStyles,
+  getRTLStyles,
+  getRTLIconStyles,
 } from './styles';
 import {
   useDebounceClick,
@@ -28,6 +30,8 @@ import {
  * - 键盘导航支持（Enter、Space键）
  * - 防重复点击保护机制
  * - 响应式设计和移动端优化
+ * - RTL语言支持（从右到左文本布局）
+ * - 多主题支持（亮色、暗色、自动切换）
  * - 增强的可访问性支持
  * 
  * 组件特性：
@@ -61,6 +65,16 @@ import {
  *   危险操作
  * </TechButton>
  * 
+ * // RTL语言支持
+ * <TechButton dir="rtl" iconLeft={<ArrowIcon />}>
+ *   العربية
+ * </TechButton>
+ * 
+ * // 暗色主题
+ * <TechButton theme="dark" variant="primary">
+ *   暗色模式
+ * </TechButton>
+ * 
  * // 防重复点击的提交按钮
  * <TechButton preventDoubleClick debounceDelay={500}>
  *   提交表单
@@ -86,6 +100,8 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
       debounceDelay = 300,
       responsive = false,
       minTouchTarget = false,
+      dir = 'ltr',
+      theme = 'light',
       disabled = false,
       className = '',
       onClick,
@@ -104,7 +120,7 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
     // ==================== Hooks ====================
     
     // 获取样式对象（使用缓存优化性能）
-    const styles = getTechButtonStyles();
+    const styles = useMemo(() => getTechButtonStyles(theme), [theme]);
 
     // 防重复点击Hook
     const { handleClick: debouncedClick } = useDebounceClick(
@@ -189,6 +205,12 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
         computedStyles = getCombinedStyles(computedStyles, shapeAdjustedStyles);
       }
 
+      // RTL语言支持
+      const rtlStyles = getRTLStyles(dir);
+      if (Object.keys(rtlStyles).length > 0) {
+        computedStyles = getCombinedStyles(computedStyles, rtlStyles);
+      }
+
       return computedStyles;
     }, [
       styles,
@@ -207,6 +229,7 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
       iconOnly,
       isMobile,
       hasTouch,
+      dir,
     ]);
 
     // ==================== 图标处理 ====================
@@ -221,12 +244,13 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
       const iconStyles = getCombinedStyles(
         styles.icons.base,
         styles.icons.sizes[actualIconSize],
-        styles.icons[position]
+        styles.icons[position],
+        getRTLIconStyles(position, dir)
       );
 
       // 如果图标是React元素，克隆并添加样式
       if (isValidElement(icon)) {
-        const iconElement = icon as React.ReactElement<any>;
+        const iconElement = icon as React.ReactElement<React.SVGAttributes<SVGElement> | React.HTMLAttributes<HTMLElement>>;
         return cloneElement(iconElement, {
           ...iconElement.props,
           style: getCombinedStyles(iconElement.props.style || {}, iconStyles),
@@ -378,6 +402,8 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
       'data-icon-only': iconOnly,
       'data-responsive': responsive,
       'data-min-touch-target': minTouchTarget,
+      'data-dir': dir,
+      'data-theme': theme,
     };
 
     // ==================== 组件渲染 ====================
