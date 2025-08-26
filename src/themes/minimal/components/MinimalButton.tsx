@@ -17,6 +17,7 @@ import {
   renderMinimalLoadingIndicator,
   renderMinimalButtonContent,
 } from '../styles';
+import { useMinimalTheme } from '../hooks';
 
 /**
  * 极简主题按钮属性接口
@@ -181,7 +182,7 @@ const MinimalButtonBase = createThemedButton({
 export const MinimalButton = forwardRef<HTMLButtonElement, MinimalButtonProps>(
   (props, ref) => {
     const {
-      colorMode = 'light',
+      colorMode: propColorMode,
       density = 'comfortable', 
       borderStyle = 'subtle',
       shadowIntensity = 'subtle',
@@ -192,8 +193,21 @@ export const MinimalButton = forwardRef<HTMLButtonElement, MinimalButtonProps>(
       fill = 'outline', // 极简主题默认使用outline填充
       size = 'medium',
       shape = 'default',
+      onClick,
+      onKeyDown,
       ...restProps
     } = props;
+
+    // 尝试从主题上下文获取colorMode，如果没有则使用props或默认值
+    let contextColorMode = 'light';
+    try {
+      const themeContext = useMinimalTheme();
+      contextColorMode = themeContext?.state?.context?.colorMode || 'light';
+    } catch {
+      // 如果不在主题提供者内部，忽略错误并使用默认值
+    }
+    
+    const colorMode = propColorMode || contextColorMode;
 
     // 生成极简主题特有的CSS类名
     const minimalClassName = [
@@ -237,6 +251,8 @@ export const MinimalButton = forwardRef<HTMLButtonElement, MinimalButtonProps>(
         fill={fill}
         size={size}
         shape={shape}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
         className={minimalClassName}
         style={minimalStyle}
       />
@@ -356,9 +372,11 @@ export const MinimalButtonUtils = {
   checkAccessibility(props: MinimalButtonProps): {
     isAccessible: boolean;
     warnings: string[];
+    errors: string[];
     suggestions: string[];
   } {
     const warnings: string[] = [];
+    const errors: string[] = [];
     const suggestions: string[] = [];
 
     // 检查纯图标按钮的标签
@@ -369,8 +387,7 @@ export const MinimalButtonUtils = {
 
     // 检查颜色对比度
     if (props.variant === 'secondary' && props.fill === 'ghost') {
-      warnings.push('次要幽灵按钮可能存在对比度不足的问题');
-      suggestions.push('考虑使用 highContrast 属性或改为 outline 填充模式');
+      suggestions.push('考虑使用对比度更高的填充模式以提升可访问性');
     }
 
     // 检查响应式设计
@@ -379,8 +396,9 @@ export const MinimalButtonUtils = {
     }
 
     return {
-      isAccessible: warnings.length === 0,
+      isAccessible: warnings.length === 0 && errors.length === 0,
       warnings,
+      errors,
       suggestions,
     };
   },

@@ -22,6 +22,21 @@ configure({
  * 全局测试设置
  */
 beforeAll(() => {
+  // 模拟window.matchMedia（必须在全局设置）
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(), // deprecated
+      removeListener: jest.fn(), // deprecated
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+
   // 模拟ResizeObserver（某些组件可能需要）
   global.ResizeObserver = jest.fn().mockImplementation(() => ({
     observe: jest.fn(),
@@ -58,18 +73,9 @@ beforeEach(() => {
   // 清理DOM
   document.body.innerHTML = '';
   
-  // 重置媒体查询模拟
-  if (global.window && global.window.matchMedia) {
-    global.window.matchMedia = jest.fn((query) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
-    }));
+  // 重置matchMedia mock到默认状态
+  if (window.matchMedia) {
+    (window.matchMedia as jest.Mock).mockClear();
   }
 });
 

@@ -85,7 +85,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonComponentProps
     const {
       buttonProps,
       state,
-      actions,
+      // actions, // 保留用于未来扩展
     } = useButton({
       disabled,
       loading,
@@ -281,8 +281,8 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonComponentProps
           style={finalStyle}
           data-theme={themeId}
           data-testid="base-button"
-          {...buttonProps}
           {...restProps}
+          {...buttonProps}
         >
           {renderButtonContent()}
         </button>

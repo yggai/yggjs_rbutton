@@ -316,7 +316,7 @@ export function useResponsiveValue<T>(values: {
   wide?: T;
   default: T;
 }): T {
-  const { utils } = useTheme();
+  // const { utils } = useTheme(); // TODO: Implement utils usage
   const [currentBreakpoint, setCurrentBreakpoint] = useState<string>('desktop');
 
   useEffect(() => {

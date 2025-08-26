@@ -159,7 +159,7 @@ export function useButton(config: UseButtonConfig & {
     if (enableKeyboardNavigation) {
       switch (key) {
         case ACCESSIBILITY_CONSTANTS.KEYBOARD.KEYS.ENTER:
-        case ACCESSIBILITY_CONSTANTS.KEYBOARD.KEYS.SPACE:
+        case ACCESSIBILITY_CONSTANTS.KEYBOARD.KEYS.SPACE: {
           event.preventDefault();
           
           // 模拟点击事件
@@ -182,6 +182,7 @@ export function useButton(config: UseButtonConfig & {
             }
           }
           break;
+        }
           
         case ACCESSIBILITY_CONSTANTS.KEYBOARD.KEYS.ESCAPE:
           // ESC键取消操作
