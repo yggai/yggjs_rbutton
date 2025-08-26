@@ -1,4 +1,4 @@
-# API 参考文档
+# yggjs_rbutton React按钮组件v1.0.0 API 参考文档
 
 ## 概述
 
@@ -1098,5 +1098,5 @@ interface BuildConfig {
 ---
 
 **版本**: 1.0.0  
-**最后更新**: 2024年  
-**维护者**: YggJS Team
+**最后更新**: 2025年  
+**维护者**: 源滚滚AI编程

@@ -8,7 +8,7 @@
  * - 响应式设计和可访问性支持
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 import React, { useState, useCallback, useMemo, Suspense, lazy } from 'react';
 import { css } from '@emotion/react';

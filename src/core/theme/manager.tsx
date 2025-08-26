@@ -5,7 +5,7 @@
  * 支持平滑过渡动画和用户偏好保存
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';

@@ -5,7 +5,7 @@
  * 包括主题切换、主题上下文管理、样式计算等
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React, { useMemo, useCallback, useEffect, useState } from 'react';
@@ -14,6 +14,7 @@ import type {
   UseThemeReturn,
   DesignTokens,
   ThemeUtilities,
+  SpacingSystem,
 } from '../types';
 import { themeRegistry } from '../theme/registry';
 import { useThemeManager } from '../theme/manager';
@@ -26,7 +27,7 @@ import { THEME_CONSTANTS } from '../../shared/constants';
  * 
  * 定义主题上下文中传递的数据结构
  */
-interface ThemeContextType {
+interface ThemeReactContextType {
   /**
    * 当前活动主题
    */
@@ -66,7 +67,7 @@ interface ThemeContextType {
  * 
  * 用于在组件树中传递主题相关的数据和函数
  */
-export const ThemeContext = React.createContext<ThemeContextType | null>(null);
+export const ThemeReactContext = React.createContext<ThemeReactContextType | null>(null);
 
 /**
  * useTheme Hook实现（新架构版本）
@@ -92,136 +93,247 @@ export function useTheme(): UseThemeReturn {
       version: currentTheme.version,
     });
 
-    let cachedTokens = defaultStyleCache.get(cacheKey) as DesignTokens;
+    let cachedTokens = defaultStyleCache.get(cacheKey) as unknown as DesignTokens | undefined;
     if (!cachedTokens) {
       // 合并基础令牌和变体令牌
-      const mergedTokens: DesignTokens = { ...currentTheme.tokens };
+      const mergedTokens: DesignTokens = { 
+        ...currentTheme.tokens,
+        // 确保所有必需的属性都存在
+        shadow: currentTheme.tokens.shadow || {
+          xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          base: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+          '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+          none: 'none',
+        }
+      };
       
       if (currentVariant && currentTheme.variants?.[currentVariant]) {
         const variant = currentTheme.variants[currentVariant];
         // 深度合并变体令牌
         Object.entries(variant).forEach(([category, variantTokens]) => {
-          if (variantTokens && mergedTokens[category as keyof DesignTokens]) {
-            (mergedTokens as Record<string, unknown>)[category] = { 
-              ...(mergedTokens as Record<string, unknown>)[category], 
-              ...(variantTokens as Record<string, unknown>) 
-            };
+          if (variantTokens && typeof variantTokens === 'object' && category in mergedTokens) {
+            const categoryKey = category as keyof DesignTokens;
+            if (categoryKey === 'colors') {
+              mergedTokens.colors = { ...mergedTokens.colors, ...variantTokens as typeof mergedTokens.colors };
+            } else if (categoryKey === 'typography') {
+              mergedTokens.typography = { ...mergedTokens.typography, ...variantTokens as typeof mergedTokens.typography };
+            } else if (categoryKey === 'spacing') {
+              mergedTokens.spacing = { ...mergedTokens.spacing, ...variantTokens as typeof mergedTokens.spacing };
+            } else if (categoryKey === 'animation') {
+              mergedTokens.animation = { ...mergedTokens.animation, ...variantTokens as typeof mergedTokens.animation };
+            } else if (categoryKey === 'shadow') {
+              mergedTokens.shadow = { ...mergedTokens.shadow, ...variantTokens as typeof mergedTokens.shadow };
+            } else if (categoryKey === 'borderRadius') {
+              mergedTokens.borderRadius = { ...mergedTokens.borderRadius, ...variantTokens as typeof mergedTokens.borderRadius };
+            }
           }
         });
       }
       
       cachedTokens = mergedTokens;
-      defaultStyleCache.set(cacheKey, cachedTokens);
+      defaultStyleCache.set(cacheKey, cachedTokens as unknown as React.CSSProperties);
     }
 
     return cachedTokens;
   }, [currentTheme, currentVariant]);
 
   // 主题工具函数
-  const utils = useMemo(() => ({
-    /**
-     * 获取令牌值
-     */
-    getToken: (path: string) => {
-      const pathSegments = path.split('.');
-      let current = tokens;
-      for (const segment of pathSegments) {
-        if (current && typeof current === 'object' && segment in current) {
-          current = current[segment];
-        } else {
-          return undefined;
+  const utils = useMemo((): ThemeUtilities => {
+    const utilsObject: ThemeUtilities = {
+      /**
+       * 获取令牌值
+       */
+      getToken: (path: string) => {
+        const pathSegments = path.split('.');
+        let current = tokens;
+        for (const segment of pathSegments) {
+          if (current && typeof current === 'object' && segment in current) {
+            current = current[segment];
+          } else {
+            return undefined;
+          }
         }
-      }
-      return current;
-    },
+        return current;
+      },
 
-    /**
-     * 生成样式
-     */
-    generateStyles: <T = Record<string, unknown>>(
-      computeFunction: (context: { theme: ThemeDefinition; tokens: DesignTokens; props: T }) => React.CSSProperties,
-      props: T
-    ): React.CSSProperties => {
-      return generateThemeStyles(
-        (context) => computeFunction({
-          theme: context.theme,
-          tokens: context.theme.tokens,
-          props: context.props,
+      /**
+       * 颜色工具函数
+       */
+      colors: {
+        getColor: (path: string) => {
+          const color = utilsObject.getToken(`colors.${path}`);
+          return typeof color === 'string' ? color : undefined;
+        },
+        alpha: (color: string, alpha: number) => {
+          if (color.startsWith('#')) {
+            const hex = color.slice(1);
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+          }
+          return color;
+        },
+        mix: (color1: string, _color2: string) => {
+          // 简化版本的颜色混合
+          return color1;
+        },
+      },
+
+      /**
+       * 间距工具函数
+       */
+      spacing: {
+        getSpacing: (value: keyof SpacingSystem) => {
+          const spacing = tokens.spacing[value];
+          return spacing || '0';
+        },
+        calculate: (base: string, multiplier: number) => {
+          const numValue = parseFloat(base);
+          if (isNaN(numValue)) return base;
+          const unit = base.replace(String(numValue), '');
+          return `${numValue * multiplier}${unit}`;
+        },
+      },
+
+      /**
+       * 响应式工具函数
+       */
+      responsive: {
+        breakpoints: {
+          mobile: currentTheme.breakpoints?.mobile || '320px',
+          tablet: currentTheme.breakpoints?.tablet || '768px',
+          desktop: currentTheme.breakpoints?.desktop || '1024px',
+          wide: currentTheme.breakpoints?.wide || '1440px',
+        },
+        mediaQuery: (breakpoint) => {
+          const breakpoints = utilsObject.responsive.breakpoints;
+          return `@media (min-width: ${breakpoints[breakpoint]})`;
+        },
+      },
+
+      /**
+       * 样式混合工具
+       */
+      mixins: {
+        truncate: () => ({
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
         }),
-        {
+        center: () => ({
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }),
+        absoluteFill: () => ({
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }),
+        visuallyHidden: () => ({
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          padding: 0,
+          margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+          whiteSpace: 'nowrap',
+          border: 0,
+        }),
+      },
+
+      /**
+       * 生成样式
+       */
+      generateStyles: <T extends Record<string, unknown> = Record<string, unknown>>(
+        computeFunction: (context: { theme: ThemeDefinition; tokens: DesignTokens; props: T }) => React.CSSProperties,
+        props: T
+      ): React.CSSProperties => {
+        return generateThemeStyles(
+          (context) => computeFunction({
+            theme: context.theme,
+            tokens: context.theme.tokens,
+            props: context.props as T,
+          }),
+          {
+            theme: currentTheme,
+            variant: currentVariant,
+            props,
+          }
+        );
+      },
+
+      /**
+       * 生成按钮样式
+       */
+      generateButtonStyles: (props: {
+        size?: 'sm' | 'md' | 'lg';
+        variant?: 'primary' | 'secondary' | 'danger' | 'success';
+        fill?: 'solid' | 'outline' | 'ghost' | 'link';
+        shape?: 'default' | 'rounded' | 'circle' | 'square';
+        disabled?: boolean;
+        loading?: boolean;
+        glow?: boolean;
+        fullWidth?: boolean;
+      }): React.CSSProperties => {
+        return generateButtonThemeStyles({
           theme: currentTheme,
           variant: currentVariant,
           props,
+        });
+      },
+
+      /**
+       * 获取响应式值
+       */
+      getResponsiveValue: <T>(values: {
+        mobile?: T;
+        tablet?: T;
+        desktop?: T;
+        wide?: T;
+        default: T;
+      }): T => {
+        // 简化版本，实际应该基于当前断点
+        return values.default;
+      },
+
+      /**
+       * 获取颜色值
+       */
+      getColor: (colorPath: string, alpha?: number): string => {
+        const color = utilsObject.getToken(`colors.${colorPath}`);
+        if (!color || typeof color !== 'string') return '';
+        
+        if (alpha !== undefined && alpha < 1) {
+          return utilsObject.colors.alpha(color, alpha);
         }
-      );
-    },
+        
+        return color;
+      },
 
-    /**
-     * 生成按钮样式
-     */
-    generateButtonStyles: (props: {
-      size?: 'sm' | 'md' | 'lg';
-      variant?: 'primary' | 'secondary' | 'danger' | 'success';
-      fill?: 'solid' | 'outline' | 'ghost' | 'link';
-      shape?: 'default' | 'rounded' | 'circle' | 'square';
-      disabled?: boolean;
-      loading?: boolean;
-      glow?: boolean;
-      fullWidth?: boolean;
-    }): React.CSSProperties => {
-      return generateButtonThemeStyles({
-        theme: currentTheme,
-        variant: currentVariant,
-        props,
-      });
-    },
+      /**
+       * 获取间距值
+       */
+      getSpacing: (spacingKey: string | number): string => {
+        const spacing = utilsObject.getToken(`spacing.${spacingKey}`);
+        return (typeof spacing === 'string') ? spacing : '0';
+      },
+    };
 
-    /**
-     * 获取响应式值
-     */
-    getResponsiveValue: <T>(values: {
-      mobile?: T;
-      tablet?: T;
-      desktop?: T;
-      wide?: T;
-      default: T;
-    }): T => {
-      // 简化版本，实际应该基于当前断点
-      return values.default;
-    },
-
-    /**
-     * 获取颜色值
-     */
-    getColor: (colorPath: string, alpha?: number): string => {
-      const color = utils.getToken(`colors.${colorPath}`);
-      if (!color || typeof color !== 'string') return '';
-      
-      if (alpha !== undefined && alpha < 1) {
-        // 简单的透明度处理
-        if (color.startsWith('#')) {
-          const hex = color.slice(1);
-          const r = parseInt(hex.substr(0, 2), 16);
-          const g = parseInt(hex.substr(2, 2), 16);
-          const b = parseInt(hex.substr(4, 2), 16);
-          return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-        }
-      }
-      
-      return color;
-    },
-
-    /**
-     * 获取间距值
-     */
-    getSpacing: (spacingKey: string | number): string => {
-      const spacing = utils.getToken(`spacing.${spacingKey}`);
-      return spacing || '0';
-    },
-  }), [tokens, currentTheme, currentVariant]);
+    return utilsObject;
+  }, [tokens, currentTheme, currentVariant]);
 
   // 获取可用主题列表
-  const getAvailableThemes = useCallback(() => {
+  const getAvailableThemes = useCallback((): Pick<ThemeDefinition, 'id' | 'name' | 'description' | 'version' | 'author'>[] => {
     return state.availableThemes.map(themeId => {
       const theme = themeRegistry.get(themeId);
       return theme ? {
@@ -231,7 +343,7 @@ export function useTheme(): UseThemeReturn {
         version: theme.version,
         author: theme.author,
       } : null;
-    }).filter(Boolean);
+    }).filter(Boolean) as Pick<ThemeDefinition, 'id' | 'name' | 'description' | 'version' | 'author'>[];
   }, [state.availableThemes]);
 
   // 主题切换函数
@@ -295,8 +407,8 @@ export function useThemeValue<T = unknown>(path: string, defaultValue?: T): T {
   const { tokens } = useTheme();
   
   return useMemo(() => {
-    const value = path.split('.').reduce((obj, key) => obj?.[key], tokens as Record<string, unknown>);
-    return value !== undefined ? value : defaultValue;
+    const value = path.split('.').reduce((obj, key) => obj?.[key], tokens as unknown as Record<string, unknown>);
+    return value !== undefined ? (value as T) : (defaultValue as T);
   }, [tokens, path, defaultValue]);
 }
 

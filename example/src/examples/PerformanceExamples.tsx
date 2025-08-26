@@ -5,7 +5,7 @@
  * 包括内存优化、渲染优化、样式缓存等高级性能特性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { css } from '@emotion/react';

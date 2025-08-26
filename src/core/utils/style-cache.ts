@@ -5,7 +5,7 @@
  * 支持TTL、LRU淘汰、内存限制等高级特性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { StyleCache, StyleCacheKey, StyleCacheValue, CacheItem } from '../types';

@@ -5,7 +5,7 @@
  * 提供完整的主题定义和初始化功能
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import { techThemeDefinition, techThemePresets, techThemeUtils } from './tokens';

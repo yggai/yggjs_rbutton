@@ -5,7 +5,7 @@
  * 确保主题的完整性和与系统的良好集成
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React from 'react';

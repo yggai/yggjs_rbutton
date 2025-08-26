@@ -5,7 +5,7 @@
  * 提供详细的设计系统分析和交互式对比功能
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 import React, { useState, useMemo } from 'react';
 import { css } from '@emotion/react';

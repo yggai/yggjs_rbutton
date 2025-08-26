@@ -5,7 +5,7 @@
  * 支持动态主题加载和管理
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 核心主题系统

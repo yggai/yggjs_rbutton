@@ -5,7 +5,7 @@
  * 包括按钮逻辑、主题管理、样式计算等功能
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 按钮相关Hooks导出
@@ -16,7 +16,7 @@ export {
 
 // 主题相关Hooks导出
 export {
-  ThemeContext,
+  ThemeReactContext,
   useTheme,
   useThemeTokens,
   useThemeUtils,

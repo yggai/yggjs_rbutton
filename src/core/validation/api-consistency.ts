@@ -5,7 +5,7 @@
  * 验证组件接口、类型定义、方法签名等的一致性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { 

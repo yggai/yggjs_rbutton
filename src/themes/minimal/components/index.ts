@@ -4,7 +4,7 @@
  * 导出极简主题的所有组件，方便统一管理和使用
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 导出主要的按钮组件

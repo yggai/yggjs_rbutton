@@ -5,7 +5,7 @@
  * 确保主题系统的完整性和一致性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { ThemeDefinition } from '../../../core/types';
@@ -56,7 +56,7 @@ export const techThemeDefinition: ThemeDefinition = {
    * 主题作者信息
    */
   author: {
-    name: 'YggJS Team',
+    name: '源滚滚AI编程',
     email: 'team@yggjs.org',
     url: 'https://yggjs.org',
   },
@@ -88,7 +88,7 @@ export const techThemeDefinition: ThemeDefinition = {
     /**
      * 阴影系统
      */
-    shadows: techShadowTokens,
+    shadow: techShadowTokens,
     
     /**
      * 边框半径系统
@@ -445,7 +445,7 @@ export const techThemeUtils = {
       typography: techTypographyTokens,
       spacing: techSpacingTokens,
       animation: techAnimationTokens,
-      shadows: techShadowTokens,
+      shadow: techShadowTokens,
       borderRadius: techBorderRadiusTokens,
     });
     

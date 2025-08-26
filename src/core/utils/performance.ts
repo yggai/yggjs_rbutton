@@ -5,7 +5,7 @@
  * 帮助开发者发现性能瓶颈和优化机会
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React from 'react';

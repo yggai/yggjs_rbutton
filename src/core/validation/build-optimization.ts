@@ -5,7 +5,7 @@
  * 支持Tree Shaking、代码分割、压缩优化等功能
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import * as fs from 'fs/promises';

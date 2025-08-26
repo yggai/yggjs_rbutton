@@ -5,7 +5,7 @@
  * 为多主题扩展提供统一的类型约束和标准
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import { ReactNode } from 'react';
@@ -366,6 +366,11 @@ export interface DesignTokens {
    * 边框半径系统
    */
   borderRadius: BorderRadiusSystem;
+  
+  /**
+   * 扩展令牌支持
+   */
+  [key: string]: unknown;
 }
 
 /**
@@ -389,6 +394,11 @@ export interface ComponentStyleMap {
  * 定义主题提供的工具函数
  */
 export interface ThemeUtilities {
+  /**
+   * 获取令牌值
+   */
+  getToken: (path: string) => unknown;
+  
   /**
    * 颜色工具函数
    */
@@ -462,7 +472,55 @@ export interface ThemeUtilities {
      * 绝对定位填满
      */
     absoluteFill: () => React.CSSProperties;
+    
+    /**
+     * 视觉上隐藏（但保留屏幕阅读器可访问性）
+     */
+    visuallyHidden: () => React.CSSProperties;
   };
+  
+  /**
+   * 生成样式
+   */
+  generateStyles: <T extends Record<string, unknown> = Record<string, unknown>>(
+    computeFunction: (context: { theme: ThemeDefinition; tokens: DesignTokens; props: T }) => React.CSSProperties,
+    props: T
+  ) => React.CSSProperties;
+  
+  /**
+   * 生成按钮样式
+   */
+  generateButtonStyles: (props: {
+    size?: 'sm' | 'md' | 'lg';
+    variant?: 'primary' | 'secondary' | 'danger' | 'success';
+    fill?: 'solid' | 'outline' | 'ghost' | 'link';
+    shape?: 'default' | 'rounded' | 'circle' | 'square';
+    disabled?: boolean;
+    loading?: boolean;
+    glow?: boolean;
+    fullWidth?: boolean;
+  }) => React.CSSProperties;
+  
+  /**
+   * 获取响应式值
+   */
+  getResponsiveValue: <T>(values: {
+    mobile?: T;
+    tablet?: T;
+    desktop?: T;
+    wide?: T;
+    default: T;
+  }) => T;
+  
+  /**
+   * 获取颜色值
+   */
+  getColor: (colorPath: string, alpha?: number) => string;
+  
+  /**
+   * 获取间距值
+   */
+  getSpacing: (spacingKey: string | number) => string;
 }
 
 /**
@@ -528,7 +586,7 @@ export interface ThemeVariant {
   typography?: Partial<TypographySystem>;
   spacing?: Partial<SpacingSystem>;
   animation?: Partial<AnimationSystem>;
-  shadows?: Partial<ShadowSystem>;
+  shadow?: Partial<ShadowSystem>;
   borderRadius?: Partial<BorderRadiusSystem>;
 }
 
@@ -574,7 +632,7 @@ export interface ThemeDefinition {
     typography: TypographySystem;
     spacing: SpacingSystem;
     animation: AnimationSystem;
-    shadows: ShadowSystem;
+    shadow: ShadowSystem;
     borderRadius: BorderRadiusSystem;
     [key: string]: unknown;
   };
@@ -780,7 +838,7 @@ export interface UseThemeReturn {
   /**
    * 获取可用主题列表
    */
-  getAvailableThemes: () => ThemeDefinition[];
+  getAvailableThemes: () => Pick<ThemeDefinition, 'id' | 'name' | 'description' | 'version' | 'author'>[];
   
   /**
    * 主题状态

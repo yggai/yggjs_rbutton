@@ -5,7 +5,7 @@
  * 采用语义化命名和分层结构，支持深色/浅色模式
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { ColorSystem } from '../../../core/types';

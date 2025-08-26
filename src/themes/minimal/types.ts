@@ -5,7 +5,7 @@
  * 与科技风主题形成对比，体现极简设计的理念
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { BaseButtonProps } from '../../core/types';
@@ -328,7 +328,7 @@ export interface MinimalStyleTokens {
   /**
    * 阴影令牌
    */
-  shadows: Record<string, string>;
+  shadow: Record<string, string>;
   
   /**
    * 边框半径令牌
@@ -707,35 +707,6 @@ export interface UseMinimalThemeReturn {
 }
 
 /**
- * 导出所有类型
+ * 所有类型已在各自定义处导出
+ * 无需重复导出以避免类型冲突
  */
-export type {
-  // 基础类型
-  MinimalColorMode,
-  MinimalDensity, 
-  MinimalBorderStyle,
-  MinimalShadowIntensity,
-  MinimalTextStyle,
-  
-  // 配置接口
-  MinimalThemeConfig,
-  MinimalThemeProps,
-  MinimalButtonProps,
-  MinimalAccessibilityConfig,
-  MinimalPerformanceConfig,
-  MinimalThemeFullConfig,
-  
-  // 上下文和状态
-  MinimalStyleContext,
-  MinimalStyleTokens,
-  MinimalThemeState,
-  MinimalThemeActions,
-  
-  // 组件接口
-  MinimalThemeProviderProps,
-  UseMinimalThemeReturn,
-  
-  // 工具接口
-  MinimalThemeUtils,
-  MinimalThemeEventHandlers,
-};

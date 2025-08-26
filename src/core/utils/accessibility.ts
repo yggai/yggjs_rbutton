@@ -5,7 +5,7 @@
  * 帮助组件符合WCAG标准和最佳实践
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import { ACCESSIBILITY_CONSTANTS, THEME_CONSTANTS } from '../../shared/constants';

@@ -5,10 +5,10 @@
  * 基于8px网格系统，确保一致性和协调性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
-import type { SpacingSystem } from '../../../core/types';
+import type { SpacingSystem, SpacingValue } from '../../../core/types';
 
 /**
  * 科技风主题间距系统
@@ -412,7 +412,7 @@ export const techSpacingUtils = {
    * @param key - 间距键名
    * @returns 间距值
    */
-  getSpacing(key: keyof SpacingSystem): string {
+  getSpacing(key: keyof SpacingSystem): SpacingValue {
     return techSpacingTokens[key];
   },
 
@@ -423,10 +423,14 @@ export const techSpacingUtils = {
    * @param multiplier - 乘数
    * @returns 计算后的间距值
    */
-  calculateSpacing(base: keyof SpacingSystem, multiplier: number): string {
-    const baseValue = parseFloat(techSpacingTokens[base]);
-    const unit = techSpacingTokens[base].replace(/[\d.]/g, '');
-    return `${baseValue * multiplier}${unit}`;
+  calculateSpacing(base: keyof SpacingSystem, multiplier: number): SpacingValue {
+    const baseValue = techSpacingTokens[base];
+    if (typeof baseValue === 'number') {
+      return baseValue * multiplier;
+    }
+    const numericValue = parseFloat(baseValue as string);
+    const unit = (baseValue as string).replace(/[\d.]/g, '');
+    return `${numericValue * multiplier}${unit}`;
   },
 
   /**
@@ -473,7 +477,10 @@ export const techSpacingUtils = {
    * @returns CSS margin/padding值
    */
   spacing(...values: (keyof SpacingSystem)[]): string {
-    const spacingValues = values.map(key => techSpacingTokens[key]);
+    const spacingValues = values.map(key => {
+      const value = techSpacingTokens[key];
+      return typeof value === 'number' ? `${value}px` : value;
+    });
     
     switch (spacingValues.length) {
       case 1:
@@ -497,6 +504,9 @@ export const techSpacingUtils = {
    */
   negativeSpacing(key: keyof SpacingSystem): string {
     const value = techSpacingTokens[key];
+    if (typeof value === 'number') {
+      return value === 0 ? '0' : `-${value}px`;
+    }
     return value === '0' ? '0' : `-${value}`;
   },
 
@@ -525,8 +535,16 @@ export const techSpacingUtils = {
     let minDifference = Infinity;
 
     Object.entries(techSpacingTokens).forEach(([key, value]) => {
-      // 将rem转换为px（假设1rem = 16px）
-      const pxValue = parseFloat(value) * 16;
+      const spacingValue = value;
+      let pxValue: number;
+      
+      if (typeof spacingValue === 'number') {
+        pxValue = spacingValue;
+      } else {
+        // 假设字符串值以rem为单位，1rem = 16px
+        pxValue = parseFloat(spacingValue) * 16;
+      }
+      
       const difference = Math.abs(pxValue - targetPx);
       
       if (difference < minDifference) {
@@ -535,9 +553,12 @@ export const techSpacingUtils = {
       }
     });
 
+    const closestValue = techSpacingTokens[closestKey];
+    const valueAsString = typeof closestValue === 'number' ? `${closestValue}px` : closestValue;
+
     return {
       key: closestKey,
-      value: techSpacingTokens[closestKey],
+      value: valueAsString,
       difference: minDifference,
     };
   },

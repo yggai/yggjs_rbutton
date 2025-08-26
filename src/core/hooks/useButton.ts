@@ -5,7 +5,7 @@
  * 包括事件处理、防抖、键盘导航、可访问性等功能
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';

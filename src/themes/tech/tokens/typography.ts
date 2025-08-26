@@ -5,7 +5,7 @@
  * 采用现代无衬线字体，强调清晰度和未来感
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { TypographySystem } from '../../../core/types';

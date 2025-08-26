@@ -6,7 +6,7 @@
  * 作为具体主题按钮的基类使用
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React, { forwardRef, useLayoutEffect } from 'react';

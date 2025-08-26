@@ -5,8 +5,10 @@
  * 包括注册机制、切换API和管理工具
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
+
+import type { DesignTokens } from '../types';
 
 // 主题注册系统
 export {

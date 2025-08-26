@@ -5,7 +5,7 @@
  * 确保测试的一致性和可维护性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 导入测试设置（自动执行全局配置）

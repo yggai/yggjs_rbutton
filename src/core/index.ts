@@ -5,7 +5,7 @@
  * 提供主题无关的基础功能和抽象
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 核心类型导出

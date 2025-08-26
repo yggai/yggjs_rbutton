@@ -5,7 +5,7 @@
  * 为多主题架构提供统一的类型约束
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import { ReactNode, ButtonHTMLAttributes, MouseEvent, KeyboardEvent } from 'react';

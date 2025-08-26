@@ -5,7 +5,7 @@
  * 支持主题变体、响应式设计、样式缓存等高级特性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React from 'react';

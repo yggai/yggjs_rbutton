@@ -8,7 +8,7 @@
  * - 响应式布局适配
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { css } from '@emotion/react';

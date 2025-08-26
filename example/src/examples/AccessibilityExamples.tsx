@@ -5,7 +5,7 @@
  * 包括键盘导航、屏幕阅读器支持、高对比度模式等
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { css } from '@emotion/react';

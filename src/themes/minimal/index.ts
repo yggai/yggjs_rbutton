@@ -5,7 +5,7 @@
  * 与科技风主题形成对比的简洁纯净设计体系
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 导入主题定义
@@ -212,5 +212,5 @@ export const minimalThemeMetadata = {
   createdAt: new Date().toISOString(),
   
   // 作者信息
-  author: 'YggJS Team',
+  author: '源滚滚AI编程',
 };

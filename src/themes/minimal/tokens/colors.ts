@@ -6,7 +6,7 @@
  * 追求纯净、简洁、优雅的视觉效果
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { ColorSystem } from '../../../core/types';

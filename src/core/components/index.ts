@@ -5,7 +5,7 @@
  * 包括基础组件、工厂函数、工具函数等
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 基础按钮组件导出

@@ -5,7 +5,7 @@
  * 包括可访问性、样式缓存、性能监控等工具
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 可访问性工具导出

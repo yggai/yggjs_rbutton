@@ -5,12 +5,12 @@
  * 支持多种输出格式：CSS变量、JSON、TypeScript类型等
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { 
   ThemeDefinition, 
-  // ThemeVariant, 
+  ThemeVariant, 
   // ColorSystem, 
   // TypographySystem, 
   // SpacingSystem,
@@ -146,7 +146,7 @@ export class DesignTokenExtractor {
     
     // 遍历各个令牌类别
     Object.entries(tokens).forEach(([category, categoryTokens]) => {
-      this.flattenTokens(categoryTokens, result, category, options);
+      this.flattenTokens(categoryTokens as Record<string, unknown>, result, category, options);
     });
     
     return result;
@@ -201,7 +201,7 @@ export class DesignTokenExtractor {
       
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         // 递归处理嵌套对象
-        this.flattenTokens(value, result, prefix, options, currentPath);
+        this.flattenTokens(value as Record<string, unknown>, result, prefix, options, currentPath);
       } else {
         // 叶子节点，添加到结果中
         const tokenName = `${options.prefix}-${prefix}-${currentPath.replace(/\./g, '-')}`;

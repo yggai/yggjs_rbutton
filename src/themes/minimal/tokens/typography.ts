@@ -6,7 +6,7 @@
  * 追求简洁而功能性的字体排版
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { TypographySystem } from '../../../core/types';

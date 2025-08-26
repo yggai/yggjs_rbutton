@@ -5,7 +5,7 @@
  * 包括默认值、配置项、魔法数字等
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 /**

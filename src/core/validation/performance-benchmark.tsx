@@ -5,7 +5,7 @@
  * 确保主题切换和组件渲染的高性能表现
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React, { Profiler, ProfilerOnRenderCallback } from 'react';

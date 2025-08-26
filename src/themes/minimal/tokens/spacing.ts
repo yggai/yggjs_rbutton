@@ -6,7 +6,7 @@
  * 相比科技风主题，使用更克制的间距变化
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { SpacingSystem } from '../../../core/types';

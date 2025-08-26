@@ -5,7 +5,7 @@
  * 确保测试环境能够准确反映真实使用场景
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import { configure } from '@testing-library/react';

@@ -6,7 +6,7 @@
  * 强调简洁、纯净、优雅的设计理念
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { ThemeDefinition } from '../../../core/types';

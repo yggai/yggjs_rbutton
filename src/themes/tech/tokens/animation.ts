@@ -5,7 +5,7 @@
  * 营造现代科技感的交互体验
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import type { AnimationSystem, ShadowSystem, BorderRadiusSystem } from '../../../core/types';

@@ -5,7 +5,7 @@
  * 便于外部使用和内部引用
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 // 按钮相关类型导出
@@ -199,7 +199,7 @@ export type ThemeAwareProps<T = Record<string, unknown>> = T & {
   /**
    * 自定义主题覆盖
    */
-  themeOverride?: DeepPartial<DesignTokens>;
+  themeOverride?: DeepPartial<Record<string, unknown>>;
 };
 
 /**

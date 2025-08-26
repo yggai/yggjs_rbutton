@@ -5,7 +5,7 @@
  * 确保与科技风主题形成对比的同时保持功能完整性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React from 'react';

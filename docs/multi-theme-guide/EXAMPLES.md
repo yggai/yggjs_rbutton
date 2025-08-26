@@ -1,4 +1,4 @@
-# 示例和教程
+# yggjs_rbutton React按钮组件v1.0.0 示例和教程
 
 ## 概述
 
@@ -1934,5 +1934,5 @@ const PerformantButtonList = ({ buttons = [] }) => {
 ---
 
 **版本**: 1.0.0  
-**最后更新**: 2024年  
-**维护者**: YggJS Team
+**最后更新**: 2025年  
+**维护者**: 源滚滚AI编程

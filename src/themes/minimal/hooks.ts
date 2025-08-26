@@ -5,7 +5,7 @@
  * 与科技风主题形成对比，专注于简洁和可用性
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import { 
@@ -343,7 +343,7 @@ export function useMinimalThemeProvider(
       spacing: minimalThemeDefinition.spacing,
       typography: minimalThemeDefinition.typography,
       animation: minimalThemeDefinition.animation,
-      shadows: minimalThemeDefinition.shadows[isDark ? 'dark' : 'light'],
+      shadow: minimalThemeDefinition.shadow[isDark ? 'dark' : 'light'],
       borderRadius: minimalThemeDefinition.borderRadius,
     };
   }, [themeState.context]);

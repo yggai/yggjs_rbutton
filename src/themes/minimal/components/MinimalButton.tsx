@@ -6,7 +6,7 @@
  * 专注于内容可读性和使用舒适度
  * 
  * @version 1.0.0
- * @author YggJS Team
+ * @author 源滚滚AI编程
  */
 
 import React, { forwardRef } from 'react';
