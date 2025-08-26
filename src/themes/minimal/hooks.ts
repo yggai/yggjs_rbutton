@@ -330,9 +330,6 @@ export function useMinimalThemeProvider(
 
   // 计算当前有效的主题令牌
   const tokens = useMemo(() => {
-    const { colorMode } = themeState.context;
-    const isDark = colorMode === 'dark';
-    
     return {
       colors: {
         primary: minimalThemeDefinition.tokens.colors.primary,
@@ -348,7 +345,7 @@ export function useMinimalThemeProvider(
       shadow: minimalThemeDefinition.tokens.shadow as unknown as Record<string, string>,
       borderRadius: minimalThemeDefinition.tokens.borderRadius as unknown as Record<string, string>,
     };
-  }, [themeState.context]);
+  }, []);
 
   return {
     state: themeState,

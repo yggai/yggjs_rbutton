@@ -8,7 +8,7 @@
  * @author 源滚滚AI编程
  */
 
-import React, { Profiler, ProfilerOnRenderCallback } from 'react';
+import React, { Profiler } from 'react';
 import { render, cleanup } from '@testing-library/react';
 
 /**

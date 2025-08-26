@@ -12,7 +12,7 @@ import React from 'react';
 import type { 
   ThemeDefinition
 } from '../types';
-import { StyleCacheImpl, StyleCacheUtils } from './style-cache';
+import { StyleCacheImpl, StyleCacheUtils, type CacheStats } from './style-cache';
 
 /**
  * 样式生成选项接口
@@ -486,7 +486,7 @@ export class ThemeAwareStyleGenerator {
   /**
    * 获取缓存统计信息
    */
-  public getCacheStats() {
+  public getCacheStats(): CacheStats {
     return this.cache.getStats();
   }
   

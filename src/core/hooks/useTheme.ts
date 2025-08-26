@@ -607,6 +607,16 @@ export function useMediaQuery(query: string): boolean {
 }
 
 /**
+ * 主题偏好设置类型
+ */
+export interface ThemePreferences {
+  theme: string;
+  colorScheme: 'light' | 'dark' | 'system';
+  reducedMotion: boolean;
+  highContrast: boolean;
+}
+
+/**
  * useThemePreference Hook
  * 
  * 管理用户的主题偏好设置
@@ -615,15 +625,10 @@ export function useMediaQuery(query: string): boolean {
  * @returns 主题偏好管理功能
  */
 export function useThemePreference(): {
-  preferences: {
-    theme: string;
-    colorScheme: 'light' | 'dark' | 'system';
-    reducedMotion: boolean;
-    highContrast: boolean;
-  };
-  updatePreference: <K extends keyof typeof preferences>(
+  preferences: ThemePreferences;
+  updatePreference: <K extends keyof ThemePreferences>(
     key: K, 
-    value: typeof preferences[K]
+    value: ThemePreferences[K]
   ) => void;
   resetPreferences: () => void;
 } {

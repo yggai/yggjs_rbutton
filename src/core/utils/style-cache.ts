@@ -25,7 +25,7 @@ interface CacheConfig {
 /**
  * 缓存统计信息
  */
-interface CacheStats {
+export interface CacheStats {
   hits: number;
   misses: number;
   sets: number;
