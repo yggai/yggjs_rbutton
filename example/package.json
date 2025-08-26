@@ -21,7 +21,7 @@
   "dependencies": {
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "yggjs_rbutton": "file:..",
+    "yggjs_rbutton": "1.0.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0"
   },
