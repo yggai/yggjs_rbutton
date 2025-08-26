@@ -61,7 +61,7 @@ export const registerAllThemes = (options: {
   console.info('🎨 开始注册主题系统...');
   
   try {
-    enabledThemes.forEach((themeKey, index) => {
+    enabledThemes.forEach((themeKey) => {
       const isDefault = themeKey === defaultTheme;
       const initializer = themeInitializers[themeKey];
       

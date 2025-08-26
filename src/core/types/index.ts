@@ -82,14 +82,14 @@ export type DeepPartial<T> = {
 /**
  * 字符串字面量联合类型转元组类型
  */
-export type UnionToTuple<T> = T extends any ? (t: T) => T : never extends (t: infer U) => any ? U : never;
+export type UnionToTuple<T> = T extends unknown ? (t: T) => T : never extends (t: infer U) => unknown ? U : never;
 
 /**
  * 递归键路径类型
  * 用于获取对象的所有可能的键路径
  */
 export type KeyPath<T, K extends keyof T = keyof T> = K extends string | number
-  ? T[K] extends Record<string, any>
+  ? T[K] extends Record<string, unknown>
     ? `${K}` | `${K}.${KeyPath<T[K]>}`
     : `${K}`
   : never;
@@ -139,17 +139,17 @@ export type NonNull<T> = T extends null | undefined ? never : T;
 /**
  * 函数参数类型提取
  */
-export type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
+export type Parameters<T extends (...args: unknown[]) => unknown> = T extends (...args: infer P) => unknown ? P : never;
 
 /**
  * 函数返回类型提取
  */
-export type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
+export type ReturnType<T extends (...args: unknown[]) => unknown> = T extends (...args: unknown[]) => infer R ? R : unknown;
 
 /**
  * 类构造函数类型
  */
-export type Constructor<T = {}> = new (...args: any[]) => T;
+export type Constructor<T = Record<string, unknown>> = new (...args: unknown[]) => T;
 
 /**
  * 混入类型
@@ -173,7 +173,7 @@ export type ComponentRef<T extends React.ElementType> = React.ComponentRef<T>;
  * 多态组件属性类型
  * 支持as属性的多态组件类型定义
  */
-export type PolymorphicComponentProps<T extends React.ElementType, P = {}> = P &
+export type PolymorphicComponentProps<T extends React.ElementType, P = Record<string, unknown>> = P &
   Omit<React.ComponentPropsWithoutRef<T>, keyof P> & {
     as?: T;
   };
@@ -181,7 +181,7 @@ export type PolymorphicComponentProps<T extends React.ElementType, P = {}> = P &
 /**
  * 带引用的多态组件属性类型
  */
-export type PolymorphicComponentPropsWithRef<T extends React.ElementType, P = {}> = P &
+export type PolymorphicComponentPropsWithRef<T extends React.ElementType, P = Record<string, unknown>> = P &
   Omit<React.ComponentPropsWithRef<T>, keyof P> & {
     as?: T;
   };
@@ -190,7 +190,7 @@ export type PolymorphicComponentPropsWithRef<T extends React.ElementType, P = {}
  * 主题感知组件属性类型
  * 为组件添加主题感知能力
  */
-export type ThemeAwareProps<T = {}> = T & {
+export type ThemeAwareProps<T = Record<string, unknown>> = T & {
   /**
    * 主题变体名称
    */
@@ -227,7 +227,7 @@ export type StyleProps = {
  * 事件处理器映射类型
  * 用于定义组件支持的所有事件处理器
  */
-export type EventHandlers<T extends Record<string, any>> = {
+export type EventHandlers<T extends Record<string, unknown>> = {
   [K in keyof T as K extends `on${string}` ? K : never]: T[K];
 };
 

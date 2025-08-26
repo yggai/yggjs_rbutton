@@ -68,7 +68,7 @@ export {
  * @param immediate - 是否立即执行
  * @returns 防抖后的函数
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number,
   immediate: boolean = false
@@ -102,7 +102,7 @@ export function debounce<T extends (...args: any[]) => any>(
  * @param limit - 限制时间间隔（毫秒）
  * @returns 节流后的函数
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -126,7 +126,7 @@ export function throttle<T extends (...args: any[]) => any>(
  * @param sources - 源对象数组
  * @returns 合并后的对象
  */
-export function deepMerge<T extends Record<string, any>>(
+export function deepMerge<T extends Record<string, unknown>>(
   target: T,
   ...sources: Array<Partial<T>>
 ): T {
@@ -155,7 +155,7 @@ export function deepMerge<T extends Record<string, any>>(
  * @param item - 要检查的值
  * @returns 是否为对象
  */
-function isObject(item: any): item is Record<string, any> {
+function isObject(item: unknown): item is Record<string, unknown> {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
@@ -181,7 +181,7 @@ export function deepClone<T>(obj: T): T {
   if (obj instanceof Object) {
     const clonedObj = {} as T;
     for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
         clonedObj[key] = deepClone(obj[key]);
       }
     }
@@ -198,7 +198,7 @@ export function deepClone<T>(obj: T): T {
  * @param b - 第二个值
  * @returns 是否相等
  */
-export function deepEqual(a: any, b: any): boolean {
+export function deepEqual(a: unknown, b: unknown): boolean {
   if (a === b) return true;
 
   if (a instanceof Date && b instanceof Date) {
@@ -395,12 +395,12 @@ export function compose<T>(...fns: Array<(arg: T) => T>): (arg: T) => T {
  * @param fn - 要柯里化的函数
  * @returns 柯里化后的函数
  */
-export function curry<T extends (...args: any[]) => any>(fn: T) {
-  return function curried(...args: any[]) {
+export function curry<T extends (...args: unknown[]) => unknown>(fn: T) {
+  return function curried(...args: unknown[]) {
     if (args.length >= fn.length) {
       return fn.apply(this, args);
     } else {
-      return function (...args2: any[]) {
+      return function (...args2: unknown[]) {
         return curried.apply(this, args.concat(args2));
       };
     }
@@ -414,7 +414,7 @@ export function curry<T extends (...args: any[]) => any>(fn: T) {
  * @param getKey - 获取缓存键的函数（可选）
  * @returns 记忆化后的函数
  */
-export function memoize<T extends (...args: any[]) => any>(
+export function memoize<T extends (...args: unknown[]) => unknown>(
   fn: T,
   getKey?: (...args: Parameters<T>) => string
 ): T {
@@ -434,9 +434,21 @@ export function memoize<T extends (...args: any[]) => any>(
   } as T;
   
   // 添加缓存管理方法
-  (memoized as any).clearCache = () => cache.clear();
-  (memoized as any).deleteCache = (key: string) => cache.delete(key);
-  (memoized as any).getCacheSize = () => cache.size;
+  (memoized as T & {
+    clearCache: () => void;
+    deleteCache: (key: string) => boolean;
+    getCacheSize: () => number;
+  }).clearCache = () => cache.clear();
+  (memoized as T & {
+    clearCache: () => void;
+    deleteCache: (key: string) => boolean;
+    getCacheSize: () => number;
+  }).deleteCache = (key: string) => cache.delete(key);
+  (memoized as T & {
+    clearCache: () => void;
+    deleteCache: (key: string) => boolean;
+    getCacheSize: () => number;
+  }).getCacheSize = () => cache.size;
   
   return memoized;
 }
@@ -449,8 +461,8 @@ export function memoize<T extends (...args: any[]) => any>(
  * @param defaultValue - 默认值
  * @returns 属性值
  */
-export function get<T = any>(
-  obj: any,
+export function get<T = unknown>(
+  obj: Record<string, unknown>,
   path: string,
   defaultValue?: T
 ): T | undefined {
@@ -475,7 +487,7 @@ export function get<T = any>(
  * @param value - 要设置的值
  * @returns 修改后的对象
  */
-export function set(obj: any, path: string, value: any): any {
+export function set(obj: Record<string, unknown>, path: string, value: unknown): Record<string, unknown> {
   const keys = path.split('.');
   const lastKey = keys.pop()!;
   
@@ -497,7 +509,7 @@ export function set(obj: any, path: string, value: any): any {
  * @param value - 要检查的值
  * @returns 是否为空
  */
-export function isEmpty(value: any): boolean {
+export function isEmpty(value: unknown): boolean {
   if (value == null) return true;
   if (typeof value === 'boolean') return false;
   if (typeof value === 'number') return false;

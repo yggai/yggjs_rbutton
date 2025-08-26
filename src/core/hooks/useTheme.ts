@@ -102,9 +102,9 @@ export function useTheme(): UseThemeReturn {
         // 深度合并变体令牌
         Object.entries(variant).forEach(([category, variantTokens]) => {
           if (variantTokens && mergedTokens[category as keyof DesignTokens]) {
-            (mergedTokens as any)[category] = { 
-              ...(mergedTokens as any)[category], 
-              ...(variantTokens as any) 
+            (mergedTokens as Record<string, unknown>)[category] = { 
+              ...(mergedTokens as Record<string, unknown>)[category], 
+              ...(variantTokens as Record<string, unknown>) 
             };
           }
         });
@@ -138,8 +138,8 @@ export function useTheme(): UseThemeReturn {
     /**
      * 生成样式
      */
-    generateStyles: <T = Record<string, any>>(
-      computeFunction: (context: { theme: ThemeDefinition; tokens: any; props: T }) => React.CSSProperties,
+    generateStyles: <T = Record<string, unknown>>(
+      computeFunction: (context: { theme: ThemeDefinition; tokens: DesignTokens; props: T }) => React.CSSProperties,
       props: T
     ): React.CSSProperties => {
       return generateThemeStyles(
@@ -291,11 +291,11 @@ export function useThemeUtils() {
  * @param defaultValue - 默认值
  * @returns 主题值
  */
-export function useThemeValue<T = any>(path: string, defaultValue?: T): T {
+export function useThemeValue<T = unknown>(path: string, defaultValue?: T): T {
   const { tokens } = useTheme();
   
   return useMemo(() => {
-    const value = path.split('.').reduce((obj, key) => obj?.[key], tokens as any);
+    const value = path.split('.').reduce((obj, key) => obj?.[key], tokens as Record<string, unknown>);
     return value !== undefined ? value : defaultValue;
   }, [tokens, path, defaultValue]);
 }

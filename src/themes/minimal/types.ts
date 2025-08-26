@@ -8,7 +8,7 @@
  * @author YggJS Team
  */
 
-import type { ThemeDefinition, BaseButtonProps } from '../../core/types';
+import type { BaseButtonProps } from '../../core/types';
 
 /**
  * 极简主题颜色模式

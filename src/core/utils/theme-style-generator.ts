@@ -10,17 +10,9 @@
 
 import React from 'react';
 import type { 
-  ThemeDefinition, 
-  ThemeVariant,
-  ColorSystem,
-  TypographySystem,
-  SpacingSystem,
-  AnimationSystem,
-  ShadowSystem,
-  BorderRadiusSystem
+  ThemeDefinition
 } from '../types';
 import { StyleCacheImpl, StyleCacheUtils } from './style-cache';
-import { THEME_CONSTANTS } from '../../shared/constants';
 
 /**
  * 样式生成选项接口
@@ -79,18 +71,18 @@ export interface StyleGenerationContext {
   /**
    * 组件属性
    */
-  props: Record<string, any>;
+  props: Record<string, unknown>;
   
   /**
    * 组件状态
    */
-  state?: Record<string, any>;
+  state?: Record<string, unknown>;
 }
 
 /**
  * 样式计算函数类型
  */
-export type StyleComputeFunction<T = Record<string, any>> = (
+export type StyleComputeFunction<T = Record<string, unknown>> = (
   context: StyleGenerationContext & { props: T }
 ) => React.CSSProperties;
 
@@ -126,7 +118,7 @@ export class ThemeAwareStyleGenerator {
    * @param context - 样式生成上下文
    * @returns 生成的样式对象
    */
-  public generateStyles<T = Record<string, any>>(
+  public generateStyles<T = Record<string, unknown>>(
     computeFunction: StyleComputeFunction<T>,
     context: StyleGenerationContext & { props: T }
   ): React.CSSProperties {
@@ -326,7 +318,7 @@ export class ThemeAwareStyleGenerator {
     variant: 'primary' | 'secondary' | 'danger' | 'success',
     fill: 'solid' | 'outline' | 'ghost' | 'link'
   ): React.CSSProperties {
-    const colorSystem = tokens.colors[variant] as any;
+    const colorSystem = tokens.colors[variant] as Record<string, string>;
     
     const baseStyles = {
       backgroundColor: colorSystem[500],
@@ -441,20 +433,17 @@ export class ThemeAwareStyleGenerator {
    */
   private applyCSSVariableFallback(
     styles: React.CSSProperties,
-    context: StyleGenerationContext
+    _context: StyleGenerationContext
   ): React.CSSProperties {
     if (!this.options.enableCSSVariableFallback) {
       return styles;
     }
     
     // 将硬编码的值替换为CSS变量（如果主题支持）
-    const { theme } = context;
-    const prefix = theme.config?.cssVariablePrefix || '--theme';
-    
     const newStyles = { ...styles };
     
     // 示例：将颜色值替换为CSS变量
-    Object.entries(newStyles).forEach(([property, value]) => {
+    Object.entries(newStyles).forEach(([, value]) => {
       if (typeof value === 'string' && value.startsWith('#')) {
         // 这里可以实现更复杂的CSS变量替换逻辑
         // 例如查找对应的令牌路径并生成CSS变量名
@@ -482,7 +471,7 @@ export class ThemeAwareStyleGenerator {
   /**
    * 获取令牌值的辅助方法
    */
-  private getTokenValue<T>(tokenGroup: T, key: keyof T): any {
+  private getTokenValue<T>(tokenGroup: T, key: keyof T): T[keyof T] {
     return tokenGroup[key];
   }
   
@@ -575,7 +564,7 @@ export const styleGeneratorFactory = new StyleGeneratorFactory();
  * @param options - 生成器选项
  * @returns 生成的样式对象
  */
-export const generateThemeStyles = <T = Record<string, any>>(
+export const generateThemeStyles = <T = Record<string, unknown>>(
   computeFunction: StyleComputeFunction<T>,
   context: StyleGenerationContext & { props: T },
   options?: StyleGeneratorOptions

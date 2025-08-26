@@ -652,7 +652,7 @@ export const MinimalButtonStyleUtils = {
   generateDebugInfo(
     props: BaseButtonProps,
     state: UseButtonReturn['state']
-  ): Record<string, any> {
+  ): Record<string, unknown> {
     return {
       theme: 'minimal',
       props,

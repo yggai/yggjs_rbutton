@@ -62,7 +62,7 @@ beforeAll(() => {
       measure: jest.fn(),
       getEntriesByName: jest.fn(() => []),
       getEntriesByType: jest.fn(() => []),
-    } as any;
+    } as Performance;
   }
 });
 
@@ -200,7 +200,7 @@ export const TestHelpers = {
 
     return {
       setStyle: (element: Element, property: string, value: string) => {
-        const styles = computedStyles.get(element) || ({} as any);
+        const styles = computedStyles.get(element) || ({} as CSSStyleDeclaration);
         styles[property] = value;
         computedStyles.set(element, styles);
       },
@@ -250,7 +250,7 @@ export const TestHelpers = {
     
     measureMemoryUsage: () => {
       if ('memory' in performance) {
-        return (performance as any).memory;
+        return (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
       }
       return null;
     },

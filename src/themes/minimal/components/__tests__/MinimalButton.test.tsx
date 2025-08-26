@@ -486,7 +486,7 @@ describe('极简主题与科技风主题的对比测试', () => {
     densities.forEach((density, index) => {
       const { unmount } = render(
         <MinimalButton 
-          density={density as any} 
+          density={density as 'compact' | 'comfortable' | 'spacious'} 
           data-testid={`density-compare-${index}`}
         >
           密度测试

@@ -299,7 +299,7 @@ export class BuildOptimizer {
           files.push(fullPath);
         }
       }
-    } catch (error) {
+    } catch {
       // 目录不存在或无权限访问
     }
     
@@ -341,7 +341,7 @@ export class BuildOptimizer {
       };
       
       return fileInfo;
-    } catch (error) {
+    } catch {
       // 返回空的文件信息
       return {
         path: filePath,
@@ -546,7 +546,7 @@ export class BuildOptimizer {
     files: FileInfo[],
     stats: BundleAnalysisResult['stats'],
     treeShaking: BundleAnalysisResult['treeShaking'],
-    dependencies: BundleAnalysisResult['dependencies']
+    _dependencies: BundleAnalysisResult['dependencies']
   ): OptimizationRecommendation[] {
     const recommendations: OptimizationRecommendation[] = [];
     
@@ -648,14 +648,14 @@ export class BuildOptimizer {
    */
   public compareThemes(): {
     themes: string[];
-    comparison: Record<string, any>;
+    comparison: Record<string, unknown>;
     recommendations: string[];
     bestPractices: string[];
   } {
     const themes = Array.from(this.analysisResults.keys());
     const results = Array.from(this.analysisResults.values());
     
-    const comparison: Record<string, any> = {
+    const comparison: Record<string, unknown> = {
       size: {},
       score: {},
       treeshaking: {},
@@ -855,7 +855,6 @@ export async function runBuildOptimization(
     }
     
     // 生成比较和报告
-    const comparison = optimizer.compareThemes();
     const report = optimizer.generateOptimizationReport();
     
     console.log('📊 构建优化分析报告:');

@@ -386,7 +386,7 @@ export const ButtonUtils = {
   getDebugInfo(
     props: BaseButtonProps,
     state: UseButtonReturn['state']
-  ): Record<string, any> {
+  ): Record<string, unknown> {
     return {
       props: {
         size: props.size,

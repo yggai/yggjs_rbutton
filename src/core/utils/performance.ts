@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import type { PerformanceMetrics, DevModeFlags } from '../types';
+import type { PerformanceMetrics } from '../types';
 import { DEVELOPMENT_CONSTANTS } from '../../shared/constants';
 
 /**
@@ -20,7 +20,7 @@ interface PerformanceMeasurement {
   duration: number;
   startTime: number;
   endTime: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -104,7 +104,7 @@ export class PerformanceMonitor {
    * @param componentName - 组件名称
    * @param props - 组件属性（用于分析）
    */
-  startRenderMeasurement(componentName: string, props?: Record<string, any>): void {
+  startRenderMeasurement(componentName: string): void {
     if (!this.shouldSample()) return;
 
     const measurementName = `${componentName}-render-${Date.now()}`;
@@ -281,7 +281,7 @@ export class PerformanceMonitor {
   recordMemoryUsage(cacheSize: number = 0): void {
     if (!this.config.enabled || !this.hasMemoryAPI()) return;
 
-    const memory = (performance as any).memory;
+    const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
     const snapshot: MemorySnapshot = {
       timestamp: Date.now(),
       usedJSHeapSize: memory.usedJSHeapSize,
@@ -538,7 +538,7 @@ export class PerformanceMonitor {
    */
   private hasMemoryAPI(): boolean {
     return typeof performance !== 'undefined' && 
-           typeof (performance as any).memory !== 'undefined';
+           typeof (performance as { memory?: unknown }).memory !== 'undefined';
   }
 
   /**
@@ -624,13 +624,13 @@ export function configurePerformanceMonitor(config: Partial<PerformanceMonitorCo
  * 性能装饰器
  * 用于自动测量组件渲染性能
  */
-export function withPerformanceMonitoring<T extends React.ComponentType<any>>(
+export function withPerformanceMonitoring<T extends React.ComponentType<Record<string, unknown>>>(
   Component: T,
   componentName?: string
 ): T {
   const name = componentName || Component.displayName || Component.name || 'Anonymous';
   
-  const WrappedComponent = React.forwardRef((props: any, ref: any) => {
+  const WrappedComponent = React.forwardRef((props: Record<string, unknown>, ref: React.Ref<unknown>) => {
     const monitor = getPerformanceMonitor();
     
     React.useLayoutEffect(() => {

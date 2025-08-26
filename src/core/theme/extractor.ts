@@ -51,12 +51,12 @@ export interface TokenExtractionOptions {
   /**
    * 自定义令牌过滤器
    */
-  filter?: (path: string, value: any) => boolean;
+  filter?: (path: string, value: unknown) => boolean;
   
   /**
    * 自定义令牌转换器
    */
-  transform?: (path: string, value: any) => any;
+  transform?: (path: string, value: unknown) => unknown;
 }
 
 /**
@@ -66,7 +66,7 @@ export interface ExtractionResult {
   /**
    * 提取的令牌
    */
-  tokens: Record<string, any>;
+  tokens: Record<string, unknown>;
   
   /**
    * 输出内容
@@ -141,8 +141,8 @@ export class DesignTokenExtractor {
   private extractBaseTokens(
     tokens: ThemeDefinition['tokens'],
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>
-  ): Record<string, any> {
-    const result: Record<string, any> = {};
+  ): Record<string, unknown> {
+    const result: Record<string, unknown> = {};
     
     // 遍历各个令牌类别
     Object.entries(tokens).forEach(([category, categoryTokens]) => {
@@ -162,8 +162,8 @@ export class DesignTokenExtractor {
   private extractVariantTokens(
     variants: Record<string, ThemeVariant>,
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>
-  ): Record<string, any> {
-    const result: Record<string, any> = {};
+  ): Record<string, unknown> {
+    const result: Record<string, unknown> = {};
     
     Object.entries(variants).forEach(([variantName, variant]) => {
       Object.entries(variant).forEach(([category, categoryTokens]) => {
@@ -190,15 +190,14 @@ export class DesignTokenExtractor {
    * @param options - 选项
    */
   private flattenTokens(
-    obj: any,
-    result: Record<string, any>,
+    obj: Record<string, unknown>,
+    result: Record<string, unknown>,
     prefix: string,
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>,
     path: string = ''
   ): void {
     Object.entries(obj).forEach(([key, value]) => {
       const currentPath = path ? `${path}.${key}` : key;
-      const fullPath = `${prefix}.${currentPath}`;
       
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         // 递归处理嵌套对象
@@ -220,7 +219,7 @@ export class DesignTokenExtractor {
    * @returns 输出内容
    */
   private generateOutput(
-    tokens: Record<string, any>,
+    tokens: Record<string, unknown>,
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>,
     theme: ThemeDefinition
   ): string {
@@ -249,7 +248,7 @@ export class DesignTokenExtractor {
    * @returns CSS内容
    */
   private generateCSS(
-    tokens: Record<string, any>,
+    tokens: Record<string, unknown>,
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>,
     theme: ThemeDefinition
   ): string {
@@ -297,7 +296,7 @@ export class DesignTokenExtractor {
    * @returns JSON内容
    */
   private generateJSON(
-    tokens: Record<string, any>,
+    tokens: Record<string, unknown>,
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>
   ): string {
     return JSON.stringify(tokens, null, options.formatted ? 2 : 0);
@@ -312,7 +311,7 @@ export class DesignTokenExtractor {
    * @returns TypeScript内容
    */
   private generateTypeScript(
-    tokens: Record<string, any>,
+    tokens: Record<string, unknown>,
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>,
     theme: ThemeDefinition
   ): string {
@@ -345,7 +344,7 @@ export class DesignTokenExtractor {
    * @returns SCSS内容
    */
   private generateSCSS(
-    tokens: Record<string, any>,
+    tokens: Record<string, unknown>,
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>,
     theme: ThemeDefinition
   ): string {
@@ -372,7 +371,7 @@ export class DesignTokenExtractor {
    * @returns Less内容
    */
   private generateLess(
-    tokens: Record<string, any>,
+    tokens: Record<string, unknown>,
     options: Required<Omit<TokenExtractionOptions, 'filter' | 'transform'>>,
     theme: ThemeDefinition
   ): string {
@@ -396,7 +395,7 @@ export class DesignTokenExtractor {
    * @param tokens - 令牌对象
    * @returns 统计信息
    */
-  private calculateStats(tokens: Record<string, any>): ExtractionResult['stats'] {
+  private calculateStats(tokens: Record<string, unknown>): ExtractionResult['stats'] {
     const stats = {
       totalTokens: Object.keys(tokens).length,
       categories: {} as Record<string, number>,
@@ -447,7 +446,7 @@ export class DesignTokenExtractor {
   ): {
     added: string[];
     removed: string[];
-    changed: Array<{ token: string; from: any; to: any }>;
+    changed: Array<{ token: string; from: unknown; to: unknown }>;
     common: string[];
   } {
     const tokens1 = this.extract(theme1, { includeComments: false }).tokens;
@@ -458,7 +457,7 @@ export class DesignTokenExtractor {
     
     const added: string[] = [];
     const removed: string[] = [];
-    const changed: Array<{ token: string; from: any; to: any }> = [];
+    const changed: Array<{ token: string; from: unknown; to: unknown }> = [];
     const common: string[] = [];
     
     // 检查新增的令牌

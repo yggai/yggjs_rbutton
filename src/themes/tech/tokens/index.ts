@@ -410,12 +410,12 @@ export const techThemeUtils = {
    * @returns CSS变量对象
    */
   generateCSSVariables(
-    tokens: Record<string, any>,
+    tokens: Record<string, unknown>,
     prefix: string = '--tech'
   ): Record<string, string> {
     const variables: Record<string, string> = {};
     
-    function processTokens(obj: Record<string, any>, path: string = '') {
+    function processTokens(obj: Record<string, unknown>, path: string = '') {
       Object.entries(obj).forEach(([key, value]) => {
         const currentPath = path ? `${path}-${key}` : key;
         
@@ -479,9 +479,9 @@ ${cssRules}
       desktop?: string;
       wide?: string;
     }
-  ): Record<string, any> {
+  ): Record<string, unknown> {
     const breakpoints = techThemeDefinition.breakpoints;
-    const styles: Record<string, any> = {};
+    const styles: Record<string, unknown> = {};
     
     if (values.mobile) {
       styles[property] = values.mobile;

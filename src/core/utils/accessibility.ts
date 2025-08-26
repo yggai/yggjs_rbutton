@@ -182,8 +182,8 @@ export function generateButtonAriaProps(props: {
   describedBy?: string;
   iconOnly?: boolean;
   children?: React.ReactNode;
-}): Record<string, any> {
-  const ariaProps: Record<string, any> = {};
+}): Record<string, string | boolean> {
+  const ariaProps: Record<string, string | boolean> = {};
   
   // 设置基本role
   ariaProps.role = 'button';
@@ -336,7 +336,7 @@ export class FocusManager {
     container.addEventListener('keydown', handleKeyDown);
     
     // 存储事件监听器以便后续移除
-    (container as any).__focusTrapHandler = handleKeyDown;
+    (container as HTMLElement & { __focusTrapHandler?: (e: KeyboardEvent) => void }).__focusTrapHandler = handleKeyDown;
     
     // 初始焦点
     firstElement.focus();
@@ -346,10 +346,10 @@ export class FocusManager {
    * 移除焦点陷阱的具体实现
    */
   private static removeFocusTrap(container: HTMLElement): void {
-    const handler = (container as any).__focusTrapHandler;
+    const handler = (container as HTMLElement & { __focusTrapHandler?: (e: KeyboardEvent) => void }).__focusTrapHandler;
     if (handler) {
       container.removeEventListener('keydown', handler);
-      delete (container as any).__focusTrapHandler;
+      delete (container as HTMLElement & { __focusTrapHandler?: (e: KeyboardEvent) => void }).__focusTrapHandler;
     }
   }
   

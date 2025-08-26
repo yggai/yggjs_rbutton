@@ -23,7 +23,6 @@ import type {
   MinimalDensity,
   MinimalThemeState,
   MinimalThemeActions,
-  MinimalStyleContext,
   MinimalThemeFullConfig,
   UseMinimalThemeReturn,
   MinimalAccessibilityConfig,
@@ -299,11 +298,11 @@ export function useMinimalThemeProvider(
     detectSystemColorScheme,
     detectReducedMotionPreference,
     detectHighContrastPreference,
-    generateCSSVariables: (tokens: any, prefix = 'minimal') => {
+    generateCSSVariables: (tokens: Record<string, unknown>, prefix = 'minimal') => {
       const variables: Record<string, string> = {};
       
       // 递归生成CSS变量
-      const generateVariables = (obj: any, path: string[] = []) => {
+      const generateVariables = (obj: Record<string, unknown>, path: string[] = []) => {
         for (const [key, value] of Object.entries(obj)) {
           if (typeof value === 'object' && value !== null) {
             generateVariables(value, [...path, key]);
@@ -317,11 +316,11 @@ export function useMinimalThemeProvider(
       generateVariables(tokens);
       return variables;
     },
-    calculateColorContrast: (foreground: string, background: string) => {
+    calculateColorContrast: () => {
       // 简化的对比度计算（实际应用中应使用更精确的算法）
       return 4.5; // WCAG AA标准
     },
-    validateAccessibility: (config: any) => ({
+    validateAccessibility: () => ({
       isValid: true,
       warnings: [],
       errors: [],
@@ -347,7 +346,7 @@ export function useMinimalThemeProvider(
       shadows: minimalThemeDefinition.shadows[isDark ? 'dark' : 'light'],
       borderRadius: minimalThemeDefinition.borderRadius,
     };
-  }, [themeState.context.colorMode]);
+  }, [themeState.context]);
 
   return {
     state: themeState,
@@ -478,7 +477,6 @@ export function useSystemPreferences() {
  */
 export function useAccessibility(config?: MinimalAccessibilityConfig) {
   const { state } = useMinimalTheme();
-  const systemPreferences = useSystemPreferences();
   
   const accessibilityConfig = useMemo(() => ({
     highContrast: config?.highContrast ?? state.context.userPreferences.prefersHighContrast,

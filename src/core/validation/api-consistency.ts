@@ -9,12 +9,7 @@
  */
 
 import type { 
-  BaseButtonProps, 
-  ThemeDefinition, 
-  ButtonVariant,
-  ButtonSize,
-  ButtonFill,
-  ButtonShape 
+  ThemeDefinition
 } from '../core/types';
 
 /**
@@ -76,11 +71,11 @@ export interface ThemeInfo {
  */
 export interface ComponentInfo {
   name: string;
-  props: Record<string, any>;
+  props: Record<string, unknown>;
   methods: MethodSignature[];
   events: EventSignature[];
   slots: string[];
-  defaultProps: Record<string, any>;
+  defaultProps: Record<string, unknown>;
 }
 
 /**
@@ -89,7 +84,7 @@ export interface ComponentInfo {
 export interface HookInfo {
   name: string;
   parameters: Parameter[];
-  returnType: any;
+  returnType: string;
   dependencies: string[];
 }
 
@@ -107,7 +102,7 @@ export interface UtilInfo {
  */
 export interface TypeInfo {
   name: string;
-  definition: any;
+  definition: unknown;
   category: 'interface' | 'type' | 'enum' | 'class';
   extends?: string[];
 }
@@ -118,7 +113,7 @@ export interface TypeInfo {
 export interface MethodSignature {
   name: string;
   parameters: Parameter[];
-  returnType: any;
+  returnType: string;
   isAsync: boolean;
   isOptional: boolean;
 }
@@ -138,9 +133,9 @@ export interface EventSignature {
  */
 export interface Parameter {
   name: string;
-  type: any;
+  type: string;
   optional: boolean;
-  defaultValue?: any;
+  defaultValue?: unknown;
   description?: string;
 }
 
@@ -151,7 +146,7 @@ export interface ValidationResult {
   level: 'error' | 'warning' | 'info';
   category: string;
   message: string;
-  details?: any;
+  details?: unknown;
   suggestion?: string;
   affectedThemes: string[];
 }
@@ -290,7 +285,7 @@ export class ApiConsistencyValidator {
    */
   private validateButtonPropsConsistency(
     theme: ThemeInfo, 
-    allThemes: ThemeInfo[]
+    _allThemes: ThemeInfo[]
   ): ValidationResult[] {
     const results: ValidationResult[] = [];
     const buttonComponent = theme.components.find(c => c.name.includes('Button'));
@@ -444,7 +439,7 @@ export class ApiConsistencyValidator {
    */
   private validateStyleApiConsistency(
     theme: ThemeInfo,
-    allThemes: ThemeInfo[]
+    _allThemes: ThemeInfo[]
   ): ValidationResult[] {
     const results: ValidationResult[] = [];
     
@@ -478,7 +473,7 @@ export class ApiConsistencyValidator {
    */
   private validateEventHandlingConsistency(
     theme: ThemeInfo,
-    allThemes: ThemeInfo[]
+    _allThemes: ThemeInfo[]
   ): ValidationResult[] {
     const results: ValidationResult[] = [];
     
@@ -537,10 +532,10 @@ export class ApiConsistencyValidator {
   /**
    * 分析颜色结构
    */
-  private analyzeColorStructure(colors: any): Record<string, string> {
+  private analyzeColorStructure(colors: Record<string, unknown>): Record<string, string> {
     const structure: Record<string, string> = {};
     
-    const analyzeObject = (obj: any, path: string = '') => {
+    const analyzeObject = (obj: Record<string, unknown>, path: string = '') => {
       for (const [key, value] of Object.entries(obj)) {
         const currentPath = path ? `${path}.${key}` : key;
         
@@ -580,7 +575,7 @@ export class ApiConsistencyValidator {
   /**
    * 提取枚举值
    */
-  private extractEnumValues(type: any): string[] {
+  private extractEnumValues(type: unknown): string[] {
     // 简化实现，实际中应该通过TypeScript编译器API获取
     if (typeof type === 'string') {
       return type.split('|').map(s => s.trim().replace(/['"]/g, ''));
@@ -698,7 +693,7 @@ export class ThemeInfoExtractor {
   public static async extractThemeInfo(
     themeId: string,
     themeName: string,
-    themeModule: any
+    themeModule: Record<string, unknown>
   ): Promise<ThemeInfo> {
     console.log(`📊 提取主题信息: ${themeName}`);
     
@@ -722,7 +717,7 @@ export class ThemeInfoExtractor {
   /**
    * 提取组件信息
    */
-  private static async extractComponentInfo(themeModule: any): Promise<ComponentInfo[]> {
+  private static async extractComponentInfo(themeModule: Record<string, unknown>): Promise<ComponentInfo[]> {
     const components: ComponentInfo[] = [];
     
     // 查找Button组件
@@ -745,7 +740,7 @@ export class ThemeInfoExtractor {
   /**
    * 提取Hook信息
    */
-  private static async extractHookInfo(themeModule: any): Promise<HookInfo[]> {
+  private static async extractHookInfo(themeModule: Record<string, unknown>): Promise<HookInfo[]> {
     const hooks: HookInfo[] = [];
     
     // 查找主题相关的Hook
@@ -769,7 +764,7 @@ export class ThemeInfoExtractor {
   /**
    * 提取工具函数信息
    */
-  private static async extractUtilInfo(themeModule: any): Promise<UtilInfo[]> {
+  private static async extractUtilInfo(themeModule: Record<string, unknown>): Promise<UtilInfo[]> {
     const utils: UtilInfo[] = [];
     
     // 查找工具函数
@@ -799,7 +794,7 @@ export class ThemeInfoExtractor {
   /**
    * 提取类型信息
    */
-  private static async extractTypeInfo(themeModule: any): Promise<TypeInfo[]> {
+  private static async extractTypeInfo(_themeModule: Record<string, unknown>): Promise<TypeInfo[]> {
     const types: TypeInfo[] = [];
     
     // 这里需要使用TypeScript编译器API来提取类型信息
@@ -811,9 +806,9 @@ export class ThemeInfoExtractor {
   /**
    * 从组件中提取属性信息
    */
-  private static extractPropsFromComponent(component: any): Record<string, any> {
+  private static extractPropsFromComponent(component: Record<string, unknown>): Record<string, unknown> {
     // 简化实现：从propTypes或defaultProps推断
-    const props: Record<string, any> = {};
+    const props: Record<string, unknown> = {};
     
     if (component.propTypes) {
       for (const [key, propType] of Object.entries(component.propTypes)) {
@@ -827,7 +822,7 @@ export class ThemeInfoExtractor {
   /**
    * 从组件中提取方法信息
    */
-  private static extractMethodsFromComponent(component: any): MethodSignature[] {
+  private static extractMethodsFromComponent(_component: Record<string, unknown>): MethodSignature[] {
     // 简化实现
     return [];
   }
@@ -835,7 +830,7 @@ export class ThemeInfoExtractor {
   /**
    * 从组件中提取事件信息
    */
-  private static extractEventsFromComponent(component: any): EventSignature[] {
+  private static extractEventsFromComponent(_component: Record<string, unknown>): EventSignature[] {
     const events: EventSignature[] = [];
     
     // 常见的按钮事件
@@ -862,7 +857,7 @@ export class ThemeInfoExtractor {
   /**
    * 提取Hook参数信息
    */
-  private static extractHookParameters(hook: Function): Parameter[] {
+  private static extractHookParameters(hook: (...args: unknown[]) => unknown): Parameter[] {
     // 简化实现：通过函数的length属性获取参数数量
     const paramCount = hook.length;
     const parameters: Parameter[] = [];

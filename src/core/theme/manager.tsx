@@ -10,7 +10,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { themeRegistry, type ThemeRegistryEvent } from './registry';
-import type { ThemeDefinition, ThemeVariant } from '../types';
+import type { ThemeDefinition } from '../types';
 import { THEME_CONSTANTS } from '../../shared/constants';
 
 /**

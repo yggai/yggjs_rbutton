@@ -69,7 +69,7 @@ const IntegrationTestUtils = {
     if (mediaQuery.addEventListener) {
       mediaQuery.dispatchEvent(event);
     } else if (mediaQuery.onchange) {
-      mediaQuery.onchange(event as any);
+      mediaQuery.onchange(event as MediaQueryListEvent);
     }
   },
 
@@ -109,7 +109,7 @@ const IntegrationTestUtils = {
           callback();
           clearTimeout(timer);
           resolve();
-        } catch (error) {
+        } catch {
           setTimeout(checkState, 10);
         }
       };
@@ -265,7 +265,7 @@ describe('极简主题集成测试', () => {
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
         dispatchEvent: jest.fn(),
-      })) as any;
+      })) as MediaQueryList;
       
       const { result } = renderHook(() => useSystemPreferences());
       
@@ -296,7 +296,7 @@ describe('极简主题集成测试', () => {
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
         dispatchEvent: jest.fn(),
-      })) as any;
+      })) as MediaQueryList;
       
       const { result } = renderHook(() => useSystemPreferences());
       

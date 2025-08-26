@@ -65,7 +65,7 @@ export const ThemeUtils = {
       id: definition.id || 'custom-theme',
       name: definition.name || 'Custom Theme',
       version: definition.version || '1.0.0',
-      tokens: definition.tokens || {} as any,
+      tokens: definition.tokens || {} as DesignTokens,
       variants: definition.variants || {},
       breakpoints: definition.breakpoints || {},
       features: definition.features || {},
@@ -82,7 +82,7 @@ export const ThemeUtils = {
    * @param theme - 主题定义
    * @returns 验证结果
    */
-  validateTheme: (theme: any): { valid: boolean; errors: string[] } => {
+  validateTheme: (theme: Partial<import('../types').ThemeDefinition>): { valid: boolean; errors: string[] } => {
     const errors: string[] = [];
     
     if (!theme.id || typeof theme.id !== 'string') {
@@ -156,7 +156,7 @@ export const ThemeUtils = {
     theme: import('../types').ThemeDefinition,
     tokenPath: string,
     variant?: string
-  ): any => {
+  ): unknown => {
     const pathSegments = tokenPath.split('.');
     const tokens = theme.tokens;
     

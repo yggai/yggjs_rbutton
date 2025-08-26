@@ -381,7 +381,7 @@ export interface ComponentStyleMap {
   /**
    * 可扩展的其他组件样式配置
    */
-  [componentName: string]: any;
+  [componentName: string]: unknown;
 }
 
 /**
@@ -576,7 +576,7 @@ export interface ThemeDefinition {
     animation: AnimationSystem;
     shadows: ShadowSystem;
     borderRadius: BorderRadiusSystem;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   
   /**
@@ -618,7 +618,7 @@ export interface ThemeDefinition {
     autoInjectCSSVariables?: boolean;
     enableCaching?: boolean;
     cacheTTL?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 

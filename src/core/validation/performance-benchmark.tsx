@@ -60,7 +60,7 @@ export interface TestScenario {
   componentCount: number;
   interactions: number;
   complexity: 'low' | 'medium' | 'high';
-  renderFunction: (theme: any) => React.ReactElement;
+  renderFunction: (theme: Record<string, unknown>) => React.ReactElement;
 }
 
 /**
@@ -113,7 +113,7 @@ export interface ProfilerData {
   baseDuration: number;
   startTime: number;
   commitTime: number;
-  interactions: any[];
+  interactions: unknown[];
 }
 
 /**
@@ -194,7 +194,7 @@ export class PerformanceBenchmark {
    */
   public async benchmarkTheme(
     themeName: string,
-    themeModule: any,
+    themeModule: Record<string, unknown>,
     scenarios?: TestScenario[]
   ): Promise<PerformanceResult[]> {
     console.log(`🚀 开始测试主题性能: ${themeName}`);
@@ -232,7 +232,7 @@ export class PerformanceBenchmark {
    */
   private async benchmarkScenario(
     themeName: string,
-    themeModule: any,
+    themeModule: Record<string, unknown>,
     scenario: TestScenario
   ): Promise<PerformanceResult> {
     const renderTimes: number[] = [];
@@ -265,7 +265,7 @@ export class PerformanceBenchmark {
       const startMemory = this.getMemoryUsage();
 
       // 渲染组件
-      const { container } = render(
+      render(
         <Profiler id={`${themeName}-${scenario.name}`} onRender={onRender}>
           {scenario.renderFunction(themeModule)}
         </Profiler>
@@ -331,10 +331,10 @@ export class PerformanceBenchmark {
   /**
    * 预热测试
    */
-  private async runWarmup(themeModule: any, scenarios: TestScenario[]): Promise<void> {
+  private async runWarmup(themeModule: Record<string, unknown>, scenarios: TestScenario[]): Promise<void> {
     for (const scenario of scenarios) {
       for (let i = 0; i < this.config.warmupIterations; i++) {
-        const { container } = render(scenario.renderFunction(themeModule));
+        render(scenario.renderFunction(themeModule));
         cleanup();
         await this.sleep(5);
       }
@@ -346,7 +346,7 @@ export class PerformanceBenchmark {
    */
   private getMemoryUsage(): number {
     if (typeof window !== 'undefined' && 'performance' in window) {
-      const memory = (performance as any).memory;
+      const memory = (performance as { memory?: { usedJSHeapSize: number } }).memory;
       if (memory) {
         return memory.usedJSHeapSize / (1024 * 1024); // 转换为MB
       }
@@ -357,7 +357,7 @@ export class PerformanceBenchmark {
   /**
    * 估算包体积
    */
-  private async estimateBundleSize(themeModule: any): Promise<number> {
+  private async estimateBundleSize(themeModule: Record<string, unknown>): Promise<number> {
     // 简化实现：通过模块内容估算大小
     const moduleString = JSON.stringify(themeModule);
     return new Blob([moduleString]).size / 1024; // 转换为KB
@@ -463,7 +463,7 @@ export class PerformanceBenchmark {
         for (const theme of themes) {
           const result = allResults.find(r => r.scenario === scenario && r.themeName === theme);
           if (result) {
-            comparisons[scenario][metric][theme] = (result.metrics as any)[metric];
+            comparisons[scenario][metric][theme] = (result.metrics as Record<string, number>)[metric];
           }
         }
       }
@@ -476,7 +476,7 @@ export class PerformanceBenchmark {
       for (const theme of themes) {
         const themeResults = allResults.filter(r => r.themeName === theme);
         const averageValue = this.average(
-          themeResults.map(r => (r.metrics as any)[metric])
+          themeResults.map(r => (r.metrics as Record<string, number>)[metric])
         );
         values.push({ theme, value: averageValue });
       }

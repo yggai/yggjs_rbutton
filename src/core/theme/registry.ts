@@ -8,7 +8,7 @@
  * @author YggJS Team
  */
 
-import type { ThemeDefinition, ThemeVariant, ThemeRegistry } from '../../core/types';
+import type { ThemeDefinition, ThemeRegistry } from '../../core/types';
 import { THEME_CONSTANTS, ERROR_CODES } from '../../shared/constants';
 
 /**

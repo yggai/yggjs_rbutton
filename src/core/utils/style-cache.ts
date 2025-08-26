@@ -408,11 +408,11 @@ export class StyleCacheImpl implements StyleCache {
     }
     
     // 防抖保存，避免频繁写入
-    if ((this as any).saveTimeout) {
-      clearTimeout((this as any).saveTimeout);
+    if ((this as StyleCacheImpl & { saveTimeout?: NodeJS.Timeout }).saveTimeout) {
+      clearTimeout((this as StyleCacheImpl & { saveTimeout?: NodeJS.Timeout }).saveTimeout);
     }
     
-    (this as any).saveTimeout = setTimeout(() => {
+    (this as StyleCacheImpl & { saveTimeout?: NodeJS.Timeout }).saveTimeout = setTimeout(() => {
       try {
         const data = Object.fromEntries(this.cache.entries());
         localStorage.setItem(this.config.storageKey, JSON.stringify(data));
@@ -491,7 +491,7 @@ export const StyleCacheUtils = {
    * @param params - 参数对象
    * @returns 缓存键
    */
-  generateCacheKey(prefix: string, params: Record<string, any>): StyleCacheKey {
+  generateCacheKey(prefix: string, params: Record<string, unknown>): StyleCacheKey {
     const sortedKeys = Object.keys(params).sort();
     const paramsString = sortedKeys
       .map(key => `${key}:${JSON.stringify(params[key])}`)
@@ -566,7 +566,7 @@ export const StyleCacheUtils = {
   /**
    * 创建带缓存的样式计算函数
    */
-  createCachedStyleFunction<T extends Record<string, any>>(
+  createCachedStyleFunction<T extends Record<string, unknown>>(
     cache: StyleCache,
     prefix: string,
     computeStyle: (params: T) => StyleCacheValue
@@ -590,8 +590,8 @@ export const StyleCacheUtils = {
    */
   warmupCache(
     cache: StyleCache,
-    computeFunction: (params: any) => [StyleCacheKey, StyleCacheValue],
-    paramSets: any[]
+    computeFunction: (params: unknown) => [StyleCacheKey, StyleCacheValue],
+    paramSets: unknown[]
   ): void {
     paramSets.forEach(params => {
       const [key, value] = computeFunction(params);
