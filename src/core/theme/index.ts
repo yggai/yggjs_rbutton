@@ -184,10 +184,10 @@ export const ThemeUtils = {
     }
     
     // 从基础令牌中获取
-    let current = tokens;
+    let current: unknown = tokens;
     for (const segment of pathSegments) {
       if (current && typeof current === 'object' && segment in current) {
-        current = current[segment];
+        current = (current as Record<string, unknown>)[segment];
       } else {
         return undefined;
       }

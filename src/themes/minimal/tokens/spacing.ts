@@ -444,7 +444,8 @@ export const minimalSpacingUtils = {
    * @returns 间距值
    */
   getSpacing(key: keyof SpacingSystem): string {
-    return minimalSpacingTokens[key];
+    const value = minimalSpacingTokens[key];
+    return typeof value === 'string' ? value : `${value}px`;
   },
 
   /**
@@ -456,8 +457,10 @@ export const minimalSpacingUtils = {
    * @returns 计算后的间距值
    */
   calculateComfortableSpacing(base: keyof SpacingSystem, multiplier: number = 1.2): string {
-    const baseValue = parseFloat(minimalSpacingTokens[base]);
-    const unit = minimalSpacingTokens[base].replace(/[\d.]/g, '');
+    const spacingValue = minimalSpacingTokens[base];
+    const spacingString = typeof spacingValue === 'string' ? spacingValue : `${spacingValue}px`;
+    const baseValue = parseFloat(spacingString);
+    const unit = spacingString.replace(/[\d.]/g, '');
     return `${baseValue * multiplier}${unit}`;
   },
 
@@ -535,7 +538,10 @@ export const minimalSpacingUtils = {
    * @returns CSS margin/padding值
    */
   symmetricSpacing(...values: (keyof SpacingSystem)[]): string {
-    const spacingValues = values.map(key => minimalSpacingTokens[key]);
+    const spacingValues = values.map(key => {
+      const value = minimalSpacingTokens[key];
+      return typeof value === 'string' ? value : `${value}px`;
+    });
     
     switch (spacingValues.length) {
       case 1:
@@ -563,8 +569,10 @@ export const minimalSpacingUtils = {
     baseSpacing: keyof SpacingSystem,
     scale: number[] = [0.5, 1, 1.5, 2, 3]
   ): string[] {
-    const baseValue = parseFloat(minimalSpacingTokens[baseSpacing]);
-    const unit = minimalSpacingTokens[baseSpacing].replace(/[\d.]/g, '');
+    const spacingValue = minimalSpacingTokens[baseSpacing];
+    const spacingString = typeof spacingValue === 'string' ? spacingValue : `${spacingValue}px`;
+    const baseValue = parseFloat(spacingString);
+    const unit = spacingString.replace(/[\d.]/g, '');
     
     return scale.map(multiplier => `${baseValue * multiplier}${unit}`);
   },
@@ -585,18 +593,21 @@ export const minimalSpacingUtils = {
 
     Object.entries(minimalSpacingTokens).forEach(([key, value]) => {
       // 将rem转换为px（假设1rem = 16px）
-      const pxValue = parseFloat(value) * 16;
+      const stringValue = typeof value === 'string' ? value : `${value}px`;
+      const pxValue = parseFloat(stringValue) * 16;
       const difference = Math.abs(pxValue - targetPx);
       
       if (difference < minDifference) {
         minDifference = difference;
-        closestKey = key as keyof SpacingSystem;
+        closestKey = key as unknown as keyof SpacingSystem;
       }
     });
 
     return {
       key: closestKey,
-      value: minimalSpacingTokens[closestKey],
+      value: typeof minimalSpacingTokens[closestKey] === 'string' 
+        ? minimalSpacingTokens[closestKey] as string
+        : `${minimalSpacingTokens[closestKey]}px`,
       difference: minDifference,
     };
   },

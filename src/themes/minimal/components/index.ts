@@ -10,8 +10,8 @@
 // 导出主要的按钮组件
 export { MinimalButton, MinimalButtonShowcase } from './MinimalButton';
 
-// 导出按钮相关的类型和工具
-export type { MinimalButtonProps } from './MinimalButton';
+// 导出按钮相关的工具
+// export type { MinimalButtonProps } from './MinimalButton';
 export { MinimalButtonUtils, defaultMinimalButtonProps } from './MinimalButton';
 
 /**
@@ -84,6 +84,6 @@ export function getComponentsByCategory(category: string) {
  */
 export function searchComponentsByTag(tag: string) {
   return Object.entries(minimalComponentRegistry)
-    .filter(([, info]) => info.tags.includes(tag))
+    .filter(([, info]) => (info.tags as readonly string[]).includes(tag))
     .map(([name, info]) => ({ name, ...info }));
 }

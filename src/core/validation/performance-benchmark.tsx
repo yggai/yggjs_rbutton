@@ -113,7 +113,7 @@ export interface ProfilerData {
   baseDuration: number;
   startTime: number;
   commitTime: number;
-  interactions: unknown[];
+  interactions: Set<{ id: number; name: string; timestamp: number }>;
 }
 
 /**
@@ -239,14 +239,13 @@ export class PerformanceBenchmark {
     const memoryUsages: number[] = [];
     const profilerData: ProfilerData[] = [];
     
-    const onRender: ProfilerOnRenderCallback = (
-      id,
-      phase,
-      actualDuration,
-      baseDuration,
-      startTime,
-      commitTime,
-      interactions
+    const onRender: React.ProfilerOnRenderCallback = (
+      id: string,
+      phase: 'mount' | 'update',
+      actualDuration: number,
+      baseDuration: number,
+      startTime: number,
+      commitTime: number
     ) => {
       profilerData.push({
         id,
@@ -255,7 +254,7 @@ export class PerformanceBenchmark {
         baseDuration,
         startTime,
         commitTime,
-        interactions,
+        interactions: new Set(), // 空的 interactions set
       });
     };
 
@@ -463,7 +462,10 @@ export class PerformanceBenchmark {
         for (const theme of themes) {
           const result = allResults.find(r => r.scenario === scenario && r.themeName === theme);
           if (result) {
-            comparisons[scenario][metric][theme] = (result.metrics as Record<string, number>)[metric];
+            const metricsValue = result.metrics[metric as keyof typeof result.metrics];
+            if (typeof metricsValue === 'number') {
+              comparisons[scenario][metric][theme] = metricsValue;
+            }
           }
         }
       }
@@ -475,9 +477,10 @@ export class PerformanceBenchmark {
       
       for (const theme of themes) {
         const themeResults = allResults.filter(r => r.themeName === theme);
-        const averageValue = this.average(
-          themeResults.map(r => (r.metrics as Record<string, number>)[metric])
-        );
+        const numericValues = themeResults
+          .map(r => r.metrics[metric as keyof typeof r.metrics])
+          .filter((val): val is number => typeof val === 'number');
+        const averageValue = this.average(numericValues);
         values.push({ theme, value: averageValue });
       }
       
@@ -654,7 +657,7 @@ export const DEFAULT_TEST_SCENARIOS: TestScenario[] = [
     complexity: 'low',
     renderFunction: (theme) => {
       const Button = theme.TechButton || theme.MinimalButton || theme.Button;
-      return React.createElement(Button, { children: '测试按钮' });
+      return React.createElement(Button as React.ComponentType<{ children: string }>, { children: '测试按钮' });
     },
   },
   {
@@ -669,7 +672,7 @@ export const DEFAULT_TEST_SCENARIOS: TestScenario[] = [
         'div',
         {},
         ...Array.from({ length: 50 }, (_, i) =>
-          React.createElement(Button, { key: i, children: `按钮 ${i}` })
+          React.createElement(Button as React.ComponentType<{ key: number; children: string }>, { key: i, children: `按钮 ${i}` })
         )
       );
     },
@@ -690,7 +693,15 @@ export const DEFAULT_TEST_SCENARIOS: TestScenario[] = [
         'div',
         {},
         ...Array.from({ length: 20 }, (_, i) =>
-          React.createElement(Button, {
+          React.createElement(Button as React.ComponentType<{
+            key: number;
+            variant: string;
+            size: string;
+            fill: string;
+            loading: boolean;
+            disabled: boolean;
+            children: string;
+          }>, {
             key: i,
             variant: variants[i % variants.length],
             size: sizes[i % sizes.length],
@@ -738,7 +749,7 @@ export async function runMultiThemePerformanceBenchmark(
   try {
     // 动态导入所有主题
     const techTheme = await import('../../tech');
-    const minimalTheme = await import('../../minimal');
+    const minimalTheme = await import('../../themes/minimal');
 
     // 测试每个主题
     await benchmark.benchmarkTheme('科技风主题', techTheme);

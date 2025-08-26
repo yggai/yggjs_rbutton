@@ -158,7 +158,7 @@ export class ThemeAwareStyleGenerator {
     
     // 缓存结果
     if (this.options.enableCache) {
-      this.cache.set(cacheKey, styles);
+      this.cache.set(cacheKey, styles as unknown as import('../types').CSSWithPseudoSelectors);
     }
     
     return styles;
@@ -261,7 +261,8 @@ export class ThemeAwareStyleGenerator {
     
     // 发光效果
     if (glow && !disabled) {
-      const glowColor = this.getTokenValue(tokens.colors[variant as keyof typeof tokens.colors], '400');
+      const colorGroup = tokens.colors[variant as keyof typeof tokens.colors] as unknown as Record<string, string>;
+      const glowColor = colorGroup['400'] || '#3b82f6'; // 默认蓝色
       styles = {
         ...styles,
         boxShadow: `0 0 20px ${glowColor}33`, // 20% 透明度

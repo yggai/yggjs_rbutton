@@ -573,7 +573,7 @@ export const minimalAnimationUtils = {
   createShadowTransition(
     fromShadow: keyof typeof minimalShadowTokens,
     toShadow: keyof typeof minimalShadowTokens
-  ): React.CSSProperties {
+  ): React.CSSProperties & { [key: `&:${string}`]: React.CSSProperties } {
     return {
       boxShadow: minimalShadowTokens[fromShadow],
       transition: minimalAnimationTokens.transition.shadow,

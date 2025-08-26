@@ -516,7 +516,7 @@ export const techSpacingUtils = {
    * @param key - 要检查的键
    * @returns 是否有效
    */
-  isValidSpacingKey(key: string): key is keyof SpacingSystem {
+  isValidSpacingKey(key: string | number): key is keyof SpacingSystem {
     return key in techSpacingTokens;
   },
 
@@ -549,7 +549,7 @@ export const techSpacingUtils = {
       
       if (difference < minDifference) {
         minDifference = difference;
-        closestKey = key as keyof SpacingSystem;
+        closestKey = (isNaN(Number(key)) ? key : Number(key)) as keyof SpacingSystem;
       }
     });
 

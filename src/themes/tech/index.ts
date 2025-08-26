@@ -213,7 +213,7 @@ export const injectTechThemeVariables = (variant: 'dark' | 'light' = 'dark'): vo
   // 如果是浅色变体，覆盖颜色变量
   if (variant === 'light' && techThemeDefinition.variants.light) {
     const lightVariables = techThemeUtils.generateCSSVariables(
-      techThemeDefinition.variants.light,
+      techThemeDefinition.variants.light as Record<string, unknown>,
       '--tech'
     );
     Object.assign(cssVariables, lightVariables);

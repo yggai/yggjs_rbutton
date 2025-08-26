@@ -651,6 +651,9 @@ export class BuildOptimizer {
     comparison: Record<string, unknown>;
     recommendations: string[];
     bestPractices: string[];
+    size: Record<string, number>;
+    score: Record<string, number>;
+    treeshaking: Record<string, number>;
   } {
     const themes = Array.from(this.analysisResults.keys());
     const results = Array.from(this.analysisResults.values());
@@ -694,11 +697,18 @@ export class BuildOptimizer {
     bestPractices.push('使用代码分割减少初始加载大小');
     bestPractices.push('优化依赖项，避免引入不必要的包');
     
+    const sizeComparison = comparison.size as Record<string, number>;
+    const scoreComparison = comparison.score as Record<string, number>;
+    const treeshakingComparison = comparison.treeshaking as Record<string, number>;
+
     return {
       themes,
       comparison,
       recommendations,
       bestPractices,
+      size: sizeComparison,
+      score: scoreComparison,
+      treeshaking: treeshakingComparison,
     };
   }
 

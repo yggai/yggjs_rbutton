@@ -234,7 +234,7 @@ export const techThemePresets = {
       borderRadius: techBorderRadiusTokens.base,
       transition: techAnimationTokens.transition.all,
       cursor: 'pointer',
-      userSelect: 'none',
+      userSelect: 'none' as const,
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -420,7 +420,7 @@ export const techThemeUtils = {
         const currentPath = path ? `${path}-${key}` : key;
         
         if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
-          processTokens(value, currentPath);
+          processTokens(value as Record<string, unknown>, currentPath);
         } else {
           const variableName = `${prefix}-${currentPath}`;
           variables[variableName] = String(value);

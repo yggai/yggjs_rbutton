@@ -139,7 +139,7 @@ export function deepMerge<T extends Record<string, unknown>>(
     for (const key in source) {
       if (isObject(source[key])) {
         if (!target[key]) Object.assign(target, { [key]: {} });
-        deepMerge(target[key], source[key]);
+        deepMerge(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
       } else {
         Object.assign(target, { [key]: source[key] });
       }
@@ -213,14 +213,19 @@ export function deepEqual(a: unknown, b: unknown): boolean {
     return false;
   }
 
-  if (a.prototype !== b.prototype) return false;
+  // 类型保护：确保 a 和 b 都是对象且有构造函数
+  if (typeof a === 'object' && typeof b === 'object' && a !== null && b !== null) {
+    if (Object.getPrototypeOf(a) !== Object.getPrototypeOf(b)) return false;
+    
+    const keys = Object.keys(a);
+    if (keys.length !== Object.keys(b).length) {
+      return false;
+    }
 
-  const keys = Object.keys(a);
-  if (keys.length !== Object.keys(b).length) {
-    return false;
+    return keys.every(k => deepEqual((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]));
   }
 
-  return keys.every(k => deepEqual(a[k], b[k]));
+  return false;
 }
 
 /**
@@ -396,11 +401,11 @@ export function compose<T>(...fns: Array<(arg: T) => T>): (arg: T) => T {
  * @returns 柯里化后的函数
  */
 export function curry<T extends (...args: unknown[]) => unknown>(fn: T) {
-  return function curried(...args: unknown[]) {
+  return function curried(this: unknown, ...args: unknown[]) {
     if (args.length >= fn.length) {
       return fn.apply(this, args);
     } else {
-      return function (...args2: unknown[]) {
+      return function (this: unknown, ...args2: unknown[]) {
         return curried.apply(this, args.concat(args2));
       };
     }
@@ -424,13 +429,13 @@ export function memoize<T extends (...args: unknown[]) => unknown>(
     const key = getKey ? getKey(...args) : JSON.stringify(args);
     
     if (cache.has(key)) {
-      return cache.get(key)!;
+      return cache.get(key) as ReturnType<T>;
     }
     
     const result = fn(...args);
-    cache.set(key, result);
+    cache.set(key, result as ReturnType<T>);
     
-    return result;
+    return result as ReturnType<T>;
   } as T;
   
   // 添加缓存管理方法
@@ -467,16 +472,16 @@ export function get<T = unknown>(
   defaultValue?: T
 ): T | undefined {
   const keys = path.split('.');
-  let result = obj;
+  let result: unknown = obj;
   
   for (const key of keys) {
     if (result == null) {
       return defaultValue;
     }
-    result = result[key];
+    result = (result as Record<string, unknown>)[key];
   }
   
-  return result === undefined ? defaultValue : result;
+  return result === undefined ? defaultValue : (result as T);
 }
 
 /**
@@ -491,12 +496,12 @@ export function set(obj: Record<string, unknown>, path: string, value: unknown):
   const keys = path.split('.');
   const lastKey = keys.pop()!;
   
-  let current = obj;
+  let current: Record<string, unknown> = obj;
   for (const key of keys) {
-    if (!(key in current) || typeof current[key] !== 'object') {
+    if (!(key in current) || typeof current[key] !== 'object' || current[key] === null) {
       current[key] = {};
     }
-    current = current[key];
+    current = current[key] as Record<string, unknown>;
   }
   
   current[lastKey] = value;

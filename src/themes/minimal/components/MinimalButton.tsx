@@ -121,7 +121,7 @@ const MinimalButtonBase = createThemedButton({
  * <MinimalButton
  *   variant="primary"
  *   leftIcon={<SaveIcon />}
- *   size="large"
+ *   size="lg"
  * >
  *   保存文档
  * </MinimalButton>
@@ -171,7 +171,7 @@ const MinimalButtonBase = createThemedButton({
  * 
  * // 紧凑密度的小按钮
  * <MinimalButton
- *   size="small"
+ *   size="sm"
  *   density="compact"
  *   borderStyle="subtle"
  * >
@@ -191,7 +191,7 @@ export const MinimalButton = forwardRef<HTMLButtonElement, MinimalButtonProps>(
       style = {},
       variant = 'primary',
       fill = 'outline', // 极简主题默认使用outline填充
-      size = 'medium',
+      size = 'md',
       shape = 'default',
       onClick,
       onKeyDown,
@@ -223,7 +223,7 @@ export const MinimalButton = forwardRef<HTMLButtonElement, MinimalButtonProps>(
       .join(' ');
 
     // 生成极简主题特有的CSS变量
-    const minimalStyle: React.CSSProperties = {
+    const minimalStyle: React.CSSProperties & Record<`--${string}`, string | number> = {
       // 极简主题的CSS变量
       '--minimal-density-multiplier': density === 'compact' ? '0.8' : 
                                      density === 'spacious' ? '1.2' : '1',
@@ -269,7 +269,7 @@ MinimalButton.displayName = 'MinimalButton';
 export const defaultMinimalButtonProps: Partial<MinimalButtonProps> = {
   variant: 'primary',
   fill: 'outline', // 极简主题偏好轮廓样式
-  size: 'medium',
+  size: 'md',
   shape: 'default',
   colorMode: 'light',
   density: 'comfortable',
@@ -391,7 +391,7 @@ export const MinimalButtonUtils = {
     }
 
     // 检查响应式设计
-    if (props.size === 'small' && !props.responsive) {
+    if (props.size === 'sm' && !props.responsive) {
       suggestions.push('小尺寸按钮建议启用响应式设计以提升触摸体验');
     }
 
@@ -447,9 +447,9 @@ export const MinimalButtonShowcase: React.FC = () => {
       
       {/* 尺寸变体 */}
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        <MinimalButton size="small">小按钮</MinimalButton>
-        <MinimalButton size="medium">中等按钮</MinimalButton>
-        <MinimalButton size="large">大按钮</MinimalButton>
+        <MinimalButton size="sm">小按钮</MinimalButton>
+        <MinimalButton size="md">中等按钮</MinimalButton>
+        <MinimalButton size="lg">大按钮</MinimalButton>
       </div>
       
       {/* 特殊状态 */}

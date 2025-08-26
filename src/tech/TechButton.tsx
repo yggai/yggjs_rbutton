@@ -519,7 +519,7 @@ export const TechButton = forwardRef<HTMLButtonElement, TechButtonProps>(
 
     if (as === 'a') {
       const linkProps = {
-        ref: ref as React.Ref<HTMLAnchorElement>,
+        ref: ref as unknown as React.ForwardedRef<HTMLAnchorElement>,
         className,
         style: buttonStyles,
         href,

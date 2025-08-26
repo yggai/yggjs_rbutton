@@ -153,12 +153,12 @@ describe('极简主题集成测试', () => {
     it('主题定义应该包含所有必需的令牌', () => {
       expect(minimalThemeDefinition).toBeDefined();
       expect(minimalThemeDefinition.name).toBe('minimal');
-      expect(minimalThemeDefinition.colors).toBeDefined();
-      expect(minimalThemeDefinition.typography).toBeDefined();
-      expect(minimalThemeDefinition.spacing).toBeDefined();
-      expect(minimalThemeDefinition.animation).toBeDefined();
-      expect(minimalThemeDefinition.shadows).toBeDefined();
-      expect(minimalThemeDefinition.borderRadius).toBeDefined();
+      expect(minimalThemeDefinition.tokens.colors).toBeDefined();
+      expect(minimalThemeDefinition.tokens.typography).toBeDefined();
+      expect(minimalThemeDefinition.tokens.spacing).toBeDefined();
+      expect(minimalThemeDefinition.tokens.animation).toBeDefined();
+      expect(minimalThemeDefinition.tokens.shadow).toBeDefined();
+      expect(minimalThemeDefinition.tokens.borderRadius).toBeDefined();
     });
 
     it('主题配置应该符合极简设计原则', () => {
@@ -265,7 +265,7 @@ describe('极简主题集成测试', () => {
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
         dispatchEvent: jest.fn(),
-      })) as MediaQueryList;
+      }));
       
       const { result } = renderHook(() => useSystemPreferences());
       
@@ -296,7 +296,7 @@ describe('极简主题集成测试', () => {
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
         dispatchEvent: jest.fn(),
-      })) as MediaQueryList;
+      }));
       
       const { result } = renderHook(() => useSystemPreferences());
       
@@ -466,7 +466,7 @@ describe('极简主题集成测试', () => {
     it('样式计算应该基于主题令牌', () => {
       const mockProps = {
         variant: 'primary' as const,
-        size: 'medium' as const,
+        size: 'md' as const,
         fill: 'solid' as const,
       };
       
@@ -516,7 +516,10 @@ describe('极简主题集成测试', () => {
       const customConfig = {
         apply: {
           colorMode: 'dark' as const,
+          responsive: true,
           animations: false,
+          respectMotionPreference: true,
+          highContrast: false,
         },
       };
       

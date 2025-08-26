@@ -381,10 +381,10 @@ export class PerformanceMonitor {
     });
 
     relevantMeasurements.forEach(measurement => {
-      const component = measurement.metadata?.component;
+      const component = measurement.metadata?.component as string;
       if (!component) return;
 
-      const stats = componentStats.get(component) || { total: 0, count: 0 };
+      const stats = componentStats.get(component as string) || { total: 0, count: 0 };
       stats.total += measurement.duration;
       stats.count += 1;
       componentStats.set(component, stats);
@@ -634,7 +634,7 @@ export function withPerformanceMonitoring<T extends React.ComponentType<Record<s
     const monitor = getPerformanceMonitor();
     
     React.useLayoutEffect(() => {
-      monitor.startRenderMeasurement(name, props);
+      monitor.startRenderMeasurement(name);
       
       return () => {
         monitor.endRenderMeasurement(name);
@@ -646,7 +646,7 @@ export function withPerformanceMonitoring<T extends React.ComponentType<Record<s
   
   WrappedComponent.displayName = `withPerformanceMonitoring(${name})`;
   
-  return WrappedComponent as T;
+  return WrappedComponent as unknown as T;
 }
 
 /**

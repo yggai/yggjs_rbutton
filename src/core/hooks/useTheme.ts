@@ -136,7 +136,7 @@ export function useTheme(): UseThemeReturn {
       }
       
       cachedTokens = mergedTokens;
-      defaultStyleCache.set(cacheKey, cachedTokens as unknown as React.CSSProperties);
+      defaultStyleCache.set(cacheKey, cachedTokens as unknown as import('../types').CSSWithPseudoSelectors);
     }
 
     return cachedTokens;
@@ -150,10 +150,10 @@ export function useTheme(): UseThemeReturn {
        */
       getToken: (path: string) => {
         const pathSegments = path.split('.');
-        let current = tokens;
+        let current: unknown = tokens;
         for (const segment of pathSegments) {
           if (current && typeof current === 'object' && segment in current) {
-            current = current[segment];
+            current = (current as Record<string, unknown>)[segment];
           } else {
             return undefined;
           }

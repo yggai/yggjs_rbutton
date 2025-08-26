@@ -10,7 +10,7 @@
 
 import type { 
   ThemeDefinition
-} from '../core/types';
+} from '../types';
 
 /**
  * API一致性验证配置
@@ -410,13 +410,13 @@ export class ApiConsistencyValidator {
     }
 
     // 检查颜色系统结构一致性
-    if (theme.definition.colors) {
-      const colorStructure = this.analyzeColorStructure(theme.definition.colors);
+    if (theme.definition.tokens?.colors) {
+      const colorStructure = this.analyzeColorStructure(theme.definition.tokens.colors as unknown as Record<string, unknown>);
       
       for (const otherTheme of allThemes) {
-        if (otherTheme.id === theme.id || !otherTheme.definition.colors) continue;
+        if (otherTheme.id === theme.id || !otherTheme.definition.tokens?.colors) continue;
         
-        const otherColorStructure = this.analyzeColorStructure(otherTheme.definition.colors);
+        const otherColorStructure = this.analyzeColorStructure(otherTheme.definition.tokens.colors as unknown as Record<string, unknown>);
         const structureDiff = this.compareStructures(colorStructure, otherColorStructure);
         
         if (structureDiff.length > 0) {
@@ -540,7 +540,7 @@ export class ApiConsistencyValidator {
         const currentPath = path ? `${path}.${key}` : key;
         
         if (typeof value === 'object' && value !== null) {
-          analyzeObject(value, currentPath);
+          analyzeObject(value as Record<string, unknown>, currentPath);
         } else {
           structure[currentPath] = typeof value;
         }
@@ -705,8 +705,8 @@ export class ThemeInfoExtractor {
     return {
       id: themeId,
       name: themeName,
-      version: themeModule.version || '1.0.0',
-      definition: themeModule.default || themeModule.themeDefinition,
+      version: (themeModule.version as string) || '1.0.0',
+      definition: (themeModule.default || themeModule.themeDefinition) as ThemeDefinition,
       components,
       hooks,
       utils,
@@ -724,14 +724,22 @@ export class ThemeInfoExtractor {
     if (themeModule.TechButton || themeModule.MinimalButton) {
       const buttonComponent = themeModule.TechButton || themeModule.MinimalButton;
       
-      components.push({
-        name: buttonComponent.displayName || 'Button',
-        props: this.extractPropsFromComponent(buttonComponent),
-        methods: this.extractMethodsFromComponent(buttonComponent),
-        events: this.extractEventsFromComponent(buttonComponent),
-        slots: [],
-        defaultProps: buttonComponent.defaultProps || {},
-      });
+      if (buttonComponent) {
+        const component = buttonComponent as {
+          displayName?: string;
+          name?: string;
+          defaultProps?: Record<string, unknown>;
+        };
+        
+        components.push({
+          name: component.displayName || component.name || 'Button',
+          props: this.extractPropsFromComponent(buttonComponent as Record<string, unknown>),
+          methods: this.extractMethodsFromComponent(buttonComponent as Record<string, unknown>),
+          events: this.extractEventsFromComponent(buttonComponent as Record<string, unknown>),
+          slots: [],
+          defaultProps: component.defaultProps || {},
+        });
+      }
     }
     
     return components;
@@ -751,7 +759,7 @@ export class ThemeInfoExtractor {
       if (typeof hook === 'function') {
         hooks.push({
           name: hookName,
-          parameters: this.extractHookParameters(hook),
+          parameters: this.extractHookParameters(hook as (...args: unknown[]) => unknown),
           returnType: 'any', // 简化实现
           dependencies: [],
         });
@@ -904,8 +912,8 @@ export async function validateApiConsistency(
 
   try {
     // 动态导入所有主题
-    const techTheme = await import('../tech');
-    const minimalTheme = await import('../minimal');
+    const techTheme = await import('../../themes/tech');
+    const minimalTheme = await import('../../themes/minimal');
 
     // 提取主题信息
     const techThemeInfo = await ThemeInfoExtractor.extractThemeInfo(

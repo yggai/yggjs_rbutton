@@ -73,7 +73,7 @@ export const minimalThemeConfig = {
    */
   apply: {
     // 默认使用浅色模式
-    colorMode: 'light' as const,
+    colorMode: 'light' as 'light' | 'dark',
     
     // 启用响应式设计
     responsive: true,
@@ -117,13 +117,13 @@ export const minimalThemeConfig = {
    */
   globalStyles: {
     // 设置全局字体
-    fontFamily: minimalThemeDefinition.typography.fontFamily.sans.join(', '),
+    fontFamily: minimalThemeDefinition.tokens.typography.fontFamily.sans.join(', '),
     
     // 设置全局文字颜色
-    color: minimalThemeDefinition.colors.default.semantic.text.primary,
+    color: minimalThemeDefinition.tokens.colors.semantic.text.primary,
     
     // 设置全局背景色
-    backgroundColor: minimalThemeDefinition.colors.default.semantic.background,
+    backgroundColor: minimalThemeDefinition.tokens.colors.semantic.background,
     
     // 优化字体渲染
     WebkitFontSmoothing: 'antialiased',
@@ -135,14 +135,14 @@ export const minimalThemeConfig = {
       height: '8px',
     },
     '::-webkit-scrollbar-track': {
-      backgroundColor: minimalThemeDefinition.colors.default.neutral[200],
+      backgroundColor: minimalThemeDefinition.tokens.colors.neutral[200],
     },
     '::-webkit-scrollbar-thumb': {
-      backgroundColor: minimalThemeDefinition.colors.default.neutral[400],
+      backgroundColor: minimalThemeDefinition.tokens.colors.neutral[400],
       borderRadius: '4px',
     },
     '::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: minimalThemeDefinition.colors.default.neutral[500],
+      backgroundColor: minimalThemeDefinition.tokens.colors.neutral[500],
     },
   },
 };
@@ -177,11 +177,11 @@ export const minimalThemeMetadata = {
   
   // 主题预览色彩
   previewColors: {
-    primary: minimalThemeDefinition.colors.default.primary[500],
-    secondary: minimalThemeDefinition.colors.default.secondary[500],
-    background: minimalThemeDefinition.colors.default.semantic.background,
-    surface: minimalThemeDefinition.colors.default.semantic.surface,
-    text: minimalThemeDefinition.colors.default.semantic.text.primary,
+    primary: minimalThemeDefinition.tokens.colors.primary[500],
+    secondary: minimalThemeDefinition.tokens.colors.secondary[500],
+    background: minimalThemeDefinition.tokens.colors.semantic.background,
+    surface: minimalThemeDefinition.tokens.colors.semantic.surface,
+    text: minimalThemeDefinition.tokens.colors.semantic.text.primary,
   },
   
   // 主题特性标签

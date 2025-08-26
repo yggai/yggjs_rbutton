@@ -10,7 +10,7 @@
  */
 
 import React from 'react';
-import type { BaseButtonProps } from '../../core/types';
+import type { BaseButtonProps, CSSWithPseudoSelectors } from '../../core/types';
 import type { UseButtonReturn, StyleCacheValue } from '../../core/types';
 import { minimalThemeDefinition } from './tokens';
 import { defaultStyleCache } from '../../core/utils/style-cache';
@@ -21,62 +21,62 @@ import { defaultStyleCache } from '../../core/utils/style-cache';
  */
 export interface MinimalButtonStyles {
   // 基础样式
-  base: React.CSSProperties;
+  base: CSSWithPseudoSelectors;
   
   // 尺寸变体样式
   sizes: {
-    small: React.CSSProperties;
-    medium: React.CSSProperties;
-    large: React.CSSProperties;
+    small: CSSWithPseudoSelectors;
+    medium: CSSWithPseudoSelectors;
+    large: CSSWithPseudoSelectors;
   };
   
   // 主题变体样式
   variants: {
-    primary: React.CSSProperties;
-    secondary: React.CSSProperties;
-    danger: React.CSSProperties;
-    success: React.CSSProperties;
+    primary: CSSWithPseudoSelectors;
+    secondary: CSSWithPseudoSelectors;
+    danger: CSSWithPseudoSelectors;
+    success: CSSWithPseudoSelectors;
   };
   
   // 填充模式样式
   fills: {
-    solid: React.CSSProperties;
-    outline: React.CSSProperties;
-    ghost: React.CSSProperties;
-    link: React.CSSProperties;
+    solid: CSSWithPseudoSelectors;
+    outline: CSSWithPseudoSelectors;
+    ghost: CSSWithPseudoSelectors;
+    link: CSSWithPseudoSelectors;
   };
   
   // 形状变体样式
   shapes: {
-    default: React.CSSProperties;
-    rounded: React.CSSProperties;
-    circle: React.CSSProperties;
-    square: React.CSSProperties;
+    default: CSSWithPseudoSelectors;
+    rounded: CSSWithPseudoSelectors;
+    circle: CSSWithPseudoSelectors;
+    square: CSSWithPseudoSelectors;
   };
   
   // 状态样式
   states: {
-    default: React.CSSProperties;
-    hover: React.CSSProperties;
-    active: React.CSSProperties;
-    focus: React.CSSProperties;
-    disabled: React.CSSProperties;
-    loading: React.CSSProperties;
+    default: CSSWithPseudoSelectors;
+    hover: CSSWithPseudoSelectors;
+    active: CSSWithPseudoSelectors;
+    focus: CSSWithPseudoSelectors;
+    disabled: CSSWithPseudoSelectors;
+    loading: CSSWithPseudoSelectors;
   };
   
   // 特效样式
   effects: {
-    glow: React.CSSProperties;
-    fullWidth: React.CSSProperties;
-    responsive: React.CSSProperties;
-    iconOnly: React.CSSProperties;
+    glow: CSSWithPseudoSelectors;
+    fullWidth: CSSWithPseudoSelectors;
+    responsive: CSSWithPseudoSelectors;
+    iconOnly: CSSWithPseudoSelectors;
   };
   
   // 可访问性样式
   accessibility: {
-    highContrast: React.CSSProperties;
-    reducedMotion: React.CSSProperties;
-    focusVisible: React.CSSProperties;
+    highContrast: CSSWithPseudoSelectors;
+    reducedMotion: CSSWithPseudoSelectors;
+    focusVisible: CSSWithPseudoSelectors;
   };
 }
 
@@ -90,9 +90,9 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
     typography,
     spacing,
     animation,
-    shadows,
+    shadow,
     borderRadius,
-  } = minimalThemeDefinition;
+  } = minimalThemeDefinition.tokens;
 
   return {
     // 基础样式 - 所有极简按钮共享的样式
@@ -105,16 +105,16 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
       gap: spacing[2], // 8px 间距，适中而舒适
       
       // 边框和背景
-      border: `1px solid ${colors.default.semantic.border}`,
+      border: `1px solid ${colors.semantic.border}`,
       borderRadius: borderRadius.base, // 4px，适度的圆角
-      backgroundColor: colors.default.semantic.surface,
+      backgroundColor: colors.semantic.surface,
       
       // 文本样式
       fontFamily: typography.fontFamily.sans.join(', '),
       fontSize: typography.fontSize.sm,
       fontWeight: typography.fontWeight.medium,
       lineHeight: typography.lineHeight.tight,
-      color: colors.default.semantic.text.primary,
+      color: colors.semantic.text.primary,
       textAlign: 'center' as const,
       textDecoration: 'none',
       letterSpacing: typography.letterSpacing.normal,
@@ -132,7 +132,7 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
       transition: animation.transition.all,
       
       // 阴影效果 - 极其微妙的阴影
-      boxShadow: shadows.default.xs,
+      boxShadow: shadow.xs,
       
       // 性能优化
       willChange: 'transform, box-shadow, border-color, background-color, color',
@@ -172,66 +172,66 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
     // 主题变体样式 - 克制的颜色应用
     variants: {
       primary: {
-        backgroundColor: colors.default.primary[500],
-        borderColor: colors.default.primary[500],
-        color: colors.default.neutral[50], // 使用浅色文字确保对比度
+        backgroundColor: colors.primary[500],
+        borderColor: colors.primary[500],
+        color: colors.neutral[50], // 使用浅色文字确保对比度
         
         // 悬停状态
         '&:hover': {
-          backgroundColor: colors.default.primary[600],
-          borderColor: colors.default.primary[600],
+          backgroundColor: colors.primary[600],
+          borderColor: colors.primary[600],
         },
         
         // 激活状态
         '&:active': {
-          backgroundColor: colors.default.primary[700],
-          borderColor: colors.default.primary[700],
+          backgroundColor: colors.primary[700],
+          borderColor: colors.primary[700],
         },
       },
       secondary: {
         backgroundColor: 'transparent',
-        borderColor: colors.default.secondary[400],
-        color: colors.default.secondary[600],
+        borderColor: colors.secondary[400],
+        color: colors.secondary[600],
         
         '&:hover': {
-          backgroundColor: colors.default.secondary[50],
-          borderColor: colors.default.secondary[500],
-          color: colors.default.secondary[700],
+          backgroundColor: colors.secondary[50],
+          borderColor: colors.secondary[500],
+          color: colors.secondary[700],
         },
         
         '&:active': {
-          backgroundColor: colors.default.secondary[100],
-          borderColor: colors.default.secondary[600],
+          backgroundColor: colors.secondary[100],
+          borderColor: colors.secondary[600],
         },
       },
       danger: {
-        backgroundColor: colors.default.danger[500],
-        borderColor: colors.default.danger[500],
-        color: colors.default.neutral[50],
+        backgroundColor: colors.danger[500],
+        borderColor: colors.danger[500],
+        color: colors.neutral[50],
         
         '&:hover': {
-          backgroundColor: colors.default.danger[600],
-          borderColor: colors.default.danger[600],
+          backgroundColor: colors.danger[600],
+          borderColor: colors.danger[600],
         },
         
         '&:active': {
-          backgroundColor: colors.default.danger[700],
-          borderColor: colors.default.danger[700],
+          backgroundColor: colors.danger[700],
+          borderColor: colors.danger[700],
         },
       },
       success: {
-        backgroundColor: colors.default.success[500],
-        borderColor: colors.default.success[500],
-        color: colors.default.neutral[50],
+        backgroundColor: colors.success[500],
+        borderColor: colors.success[500],
+        color: colors.neutral[50],
         
         '&:hover': {
-          backgroundColor: colors.default.success[600],
-          borderColor: colors.default.success[600],
+          backgroundColor: colors.success[600],
+          borderColor: colors.success[600],
         },
         
         '&:active': {
-          backgroundColor: colors.default.success[700],
-          borderColor: colors.default.success[700],
+          backgroundColor: colors.success[700],
+          borderColor: colors.success[700],
         },
       },
     },
@@ -314,17 +314,17 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
       },
       hover: {
         transform: 'translateY(-1px)', // 极微妙的上升效果
-        boxShadow: shadows.default.sm,
-        borderColor: colors.default.neutral[400],
+        boxShadow: shadow.sm,
+        borderColor: colors.neutral[400],
       },
       active: {
         transform: 'translateY(0px)',
-        boxShadow: shadows.default.xs,
+        boxShadow: shadow.xs,
         transition: animation.transition.all.replace('300ms', '150ms'), // 更快的激活反馈
       },
       focus: {
         outline: 'none',
-        boxShadow: `${shadows.default.sm}, 0 0 0 2px ${colors.default.primary[200]}`, // 微妙的焦点环
+        boxShadow: `${shadow.sm}, 0 0 0 2px ${colors.primary[200]}`, // 微妙的焦点环
       },
       disabled: {
         opacity: 0.5,
@@ -332,9 +332,9 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
         pointerEvents: 'none' as const,
         transform: 'none',
         boxShadow: 'none',
-        color: colors.default.semantic.text.disabled,
-        backgroundColor: colors.default.neutral[100],
-        borderColor: colors.default.neutral[200],
+        color: colors.semantic.text.disabled,
+        backgroundColor: colors.neutral[100],
+        borderColor: colors.neutral[200],
       },
       loading: {
         cursor: 'wait',
@@ -347,7 +347,7 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
     effects: {
       glow: {
         // 极简主题的发光效果非常微妙
-        boxShadow: `${shadows.default.base}, 0 0 0 1px rgba(0, 0, 0, 0.05)`,
+        boxShadow: `${shadow.base}, 0 0 0 1px rgba(0, 0, 0, 0.05)`,
       },
       fullWidth: {
         width: '100%',
@@ -384,7 +384,7 @@ function createMinimalButtonStyles(): MinimalButtonStyles {
       focusVisible: {
         // 仅在键盘导航时显示焦点环
         '&:focusVisible': {
-          outline: `2px solid ${colors.default.primary[500]}`,
+          outline: `2px solid ${colors.primary[500]}`,
           outlineOffset: '2px',
         },
       },
@@ -405,12 +405,12 @@ const styleCache = defaultStyleCache;
 export function getMinimalButtonStyles(): MinimalButtonStyles {
   const cached = styleCache.get('minimal-button');
   if (cached) {
-    return cached as MinimalButtonStyles;
+    return cached as unknown as MinimalButtonStyles;
   }
   
   // 如果缓存中不存在，创建新的样式并缓存
   const styles = createMinimalButtonStyles();
-  styleCache.set('minimal-button', styles);
+  styleCache.set('minimal-button', styles as unknown as CSSWithPseudoSelectors);
   return styles;
 }
 
@@ -431,7 +431,7 @@ export function computeMinimalButtonStyles(
   const styles = getMinimalButtonStyles();
   
   // 基础样式
-  let computedStyle: React.CSSProperties = {
+  let computedStyle: CSSWithPseudoSelectors = {
     ...styles.base,
   };
 
@@ -613,12 +613,17 @@ export const MinimalButtonStyleUtils = {
    * @returns CSS变量对象
    */
   getCSSVariables(props: BaseButtonProps): Record<string, string> {
-    const { spacing } = minimalThemeDefinition;
+    const { spacing } = minimalThemeDefinition.tokens;
+    
+    const getSpacingValue = (key: keyof typeof spacing): string => {
+      const value = spacing[key];
+      return typeof value === 'string' ? value : `${value}px`;
+    };
     
     return {
-      '--button-size': props.size === 'small' ? spacing[8] : 
-                      props.size === 'large' ? spacing[12] : 
-                      spacing[10],
+      '--button-size': props.size === 'sm' ? getSpacingValue(8) : 
+                      props.size === 'lg' ? getSpacingValue(12) : 
+                      getSpacingValue(10),
     };
   },
 

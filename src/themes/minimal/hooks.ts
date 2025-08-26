@@ -298,14 +298,14 @@ export function useMinimalThemeProvider(
     detectSystemColorScheme,
     detectReducedMotionPreference,
     detectHighContrastPreference,
-    generateCSSVariables: (tokens: Record<string, unknown>, prefix = 'minimal') => {
+    generateCSSVariables: (tokens: import('./types').MinimalStyleTokens, prefix = 'minimal') => {
       const variables: Record<string, string> = {};
       
       // 递归生成CSS变量
       const generateVariables = (obj: Record<string, unknown>, path: string[] = []) => {
         for (const [key, value] of Object.entries(obj)) {
           if (typeof value === 'object' && value !== null) {
-            generateVariables(value, [...path, key]);
+            generateVariables(value as Record<string, unknown>, [...path, key]);
           } else {
             const variableName = `--${prefix}-${[...path, key].join('-')}`;
             variables[variableName] = String(value);
@@ -313,7 +313,7 @@ export function useMinimalThemeProvider(
         }
       };
       
-      generateVariables(tokens);
+      generateVariables(tokens as unknown as Record<string, unknown>);
       return variables;
     },
     calculateColorContrast: () => {
@@ -335,16 +335,18 @@ export function useMinimalThemeProvider(
     
     return {
       colors: {
-        primary: minimalThemeDefinition.colors[isDark ? 'dark' : 'light'].primary,
-        secondary: minimalThemeDefinition.colors[isDark ? 'dark' : 'light'].secondary,
-        neutral: minimalThemeDefinition.colors[isDark ? 'dark' : 'light'].neutral,
-        semantic: minimalThemeDefinition.colors[isDark ? 'dark' : 'light'].semantic,
+        primary: minimalThemeDefinition.tokens.colors.primary,
+        secondary: minimalThemeDefinition.tokens.colors.secondary,
+        neutral: minimalThemeDefinition.tokens.colors.neutral,
+        danger: minimalThemeDefinition.tokens.colors.danger,
+        success: minimalThemeDefinition.tokens.colors.success,
+        semantic: minimalThemeDefinition.tokens.colors.semantic,
       },
-      spacing: minimalThemeDefinition.spacing,
-      typography: minimalThemeDefinition.typography,
-      animation: minimalThemeDefinition.animation,
-      shadow: minimalThemeDefinition.shadow[isDark ? 'dark' : 'light'],
-      borderRadius: minimalThemeDefinition.borderRadius,
+      spacing: minimalThemeDefinition.tokens.spacing as unknown as Record<string | number, string>,
+      typography: minimalThemeDefinition.tokens.typography as unknown as import('./types').MinimalStyleTokens['typography'],
+      animation: minimalThemeDefinition.tokens.animation,
+      shadow: minimalThemeDefinition.tokens.shadow as unknown as Record<string, string>,
+      borderRadius: minimalThemeDefinition.tokens.borderRadius as unknown as Record<string, string>,
     };
   }, [themeState.context]);
 

@@ -372,10 +372,19 @@ export interface UseButtonReturn {
 export type StyleCacheKey = string;
 
 /**
+ * CSS-in-JS样式对象类型
+ * 支持伪选择器和CSS自定义属性
+ */
+export type CSSWithPseudoSelectors = React.CSSProperties & {
+  [key: `&:${string}`]: React.CSSProperties;
+  [key: `--${string}`]: string | number;
+};
+
+/**
  * 样式缓存值类型
  * 缓存的样式对象类型
  */
-export type StyleCacheValue = React.CSSProperties;
+export type StyleCacheValue = CSSWithPseudoSelectors;
 
 /**
  * 样式缓存接口

@@ -62,7 +62,7 @@ beforeAll(() => {
       measure: jest.fn(),
       getEntriesByName: jest.fn(() => []),
       getEntriesByType: jest.fn(() => []),
-    } as Performance;
+    } as unknown as Performance;
   }
 });
 

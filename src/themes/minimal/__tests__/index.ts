@@ -19,7 +19,7 @@ export {
 } from './setup';
 
 // 导出组件测试
-export * from './components/__tests__/MinimalButton.test';
+// export * from './components/__tests__/MinimalButton.test';
 
 // 导出集成测试
 export * from './integration.test';
